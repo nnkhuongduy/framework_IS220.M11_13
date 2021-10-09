@@ -1,4 +1,5 @@
 using _99phantram.Interfaces;
+using _99phantram.Helpers;
 using _99phantram.Options;
 using _99phantram.Services;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,8 @@ namespace _99phantram
 {
   public class Startup
   {
+    readonly string AllowSpecificOrigins = "_AllowSpecificOrigins";
+
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
@@ -23,16 +26,39 @@ namespace _99phantram
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddCors(options =>
+      {
+        options.AddPolicy(name: AllowSpecificOrigins, builder =>
+        {
+          builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowCredentials().AllowAnyHeader();
+        });
+      });
+
       services.AddSingleton<IDatabaseContextOptions, DatabaseContextOptions>();
       services.AddSingleton<IDatabaseContext, DatabaseContext>();
+      services.AddSingleton<IAuthService, AuthService>();
+      services.AddSingleton<IEmployeeService, EmployeeService>();
+      services.AddSingleton<IRoleService, RoleService>();
 
-      services.AddControllers();
-    }   
+      services.AddControllers().AddNewtonsoftJson();
+      services.AddSwaggerGen(c =>
+      {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "99phantram_backend", Version = "v1" });
+      });
+    }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+      if (env.IsDevelopment())
+      {
+        app.UseSwagger();
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "99phantram_backend v1"));
+      }
+
+      app.UseCors(AllowSpecificOrigins);
       app.UseRouting();
+      app.UseMiddleware<JwtMiddleWare>();
 
       app.UseEndpoints(endpoints =>
       {
