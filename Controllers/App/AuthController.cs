@@ -1,0 +1,53 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using _99phantram.Models;
+using _99phantram.Entities;
+using _99phantram.Helpers;
+using _99phantram.Interfaces;
+
+namespace _99phantram.Controllers.App
+{
+  [Route("/api/app/auth")]
+  [ApiController]
+  public class AuthController : ControllerBase
+  {
+    private IEmployeeService _employeeService;
+    private ILogger _logger;
+    private IAuthService _authService;
+
+    public AuthController(IEmployeeService employeeService, IAuthService authService, ILogger<AuthController> logger)
+    {
+      _employeeService = employeeService;
+      _logger = logger;
+      _authService = authService;
+    }
+
+    [HttpPost]
+    [Route("login")]
+    public ActionResult<AuthResponse> Login(AuthRequest request)
+    {
+      var employee = _employeeService.FindOne(e => e.Username == request.Username);
+
+      if (employee == null)
+      {
+        return NotFound(new HttpError(false, 404, "Không tìm thấy nhân viên!"));
+      }
+
+      if (!_authService.VerifyPassword(request.Password, employee.Password))
+      {
+        return BadRequest(new HttpError(false, 400, "Mật khẩu không đúng!"));
+      }
+
+      var authResponse = _authService.Authenticate(employee, request.Remember == "true");
+
+      return authResponse;
+    }
+
+    [HttpGet]
+    [TypeFilter(typeof(EmployeeAuthorize))]
+    public ActionResult<Employee> Authenticate()
+    {
+      return (Employee)HttpContext.Items["Employee"];
+    }
+  }
+}
