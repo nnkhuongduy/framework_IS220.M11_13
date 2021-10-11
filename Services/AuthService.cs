@@ -30,7 +30,7 @@ namespace _99phantram.Services
       return BC.Verify(password, hash);
     }
 
-    public AuthResponse Authenticate(UserBase indentifier, bool isRemember = false)
+    public AuthResponse Authenticate(User indentifier, bool isRemember = false)
     {
       var tokenHandler = new JwtSecurityTokenHandler();
       var key = Encoding.ASCII.GetBytes(_config["JWT:SecretKey"]);

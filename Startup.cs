@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using FluentValidation.AspNetCore;
+using _99phantram.Models;
+using FluentValidation;
 
 namespace _99phantram
 {
@@ -33,12 +35,14 @@ namespace _99phantram
           builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowCredentials().AllowAnyHeader();
         });
       });
+      services.AddFluentValidation();
 
+      services.AddTransient<IValidator<PostUserBody>, PostUserBodyValidator>();
       services.AddSingleton<IDatabaseContextOptions, DatabaseContextOptions>();
       services.AddSingleton<IDatabaseContext, DatabaseContext>();
       services.AddSingleton<IAuthService, AuthService>();
-      services.AddSingleton<IEmployeeService, EmployeeService>();
       services.AddSingleton<IRoleService, RoleService>();
+      services.AddSingleton<IUserService, UserService>();
 
       services.AddControllers().AddNewtonsoftJson();
       services.AddSwaggerGen(c =>
