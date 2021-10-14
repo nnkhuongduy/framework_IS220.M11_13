@@ -28,7 +28,11 @@ namespace _99phantram.Helpers
         {
           var verifiedToken = _authService.VerifyToken(token);
           var empId = verifiedToken.Claims.First(x => x.Type == "id").Value;
-          var user = _userService.GetUser(e => e.Id == empId && e.Role.RoleLevel != Entities.RoleLevel.CLIENT).FirstOrDefault();
+          var user = _userService.GetUser(e =>
+            e.Id.Equals(empId) &&
+            e.Role.RoleLevel != Entities.RoleLevel.CLIENT &&
+            e.Status == Entities.UserStatus.VERIFIED
+          ).FirstOrDefault();
 
           if (user != null)
             context.HttpContext.Items["User"] = user;

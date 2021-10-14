@@ -1,6 +1,5 @@
 using _99phantram.Entities;
 using FluentValidation;
-using Newtonsoft.Json;
 
 namespace _99phantram.Models
 {
@@ -26,10 +25,10 @@ namespace _99phantram.Models
       RuleFor(r => r.LastName).NotEmpty();
       RuleFor(r => r.Email).NotEmpty().EmailAddress();
       RuleFor(r => r.Password).NotEmpty().MinimumLength(7);
-      RuleFor(r => r.Sex).NotEmpty().IsInEnum();
+      RuleFor(r => r.Sex).IsInEnum();
       RuleFor(r => r.Address).NotEmpty();
       RuleFor(r => r.PhoneNumber).NotEmpty().Length(10);
-      RuleFor(r => r.Status).NotEmpty().IsInEnum();
+      RuleFor(r => r.Status).IsInEnum();
     }
   }
 }

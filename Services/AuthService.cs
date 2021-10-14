@@ -48,26 +48,19 @@ namespace _99phantram.Services
 
     public JwtSecurityToken VerifyToken(string token)
     {
-      try
-      {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_config["JWT:SecretKey"]);
+      var tokenHandler = new JwtSecurityTokenHandler();
+      var key = Encoding.ASCII.GetBytes(_config["JWT:SecretKey"]);
 
-        tokenHandler.ValidateToken(token, new TokenValidationParameters
-        {
-          ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(key),
-          ValidateIssuer = false,
-          ValidateAudience = false,
-          ClockSkew = TimeSpan.Zero,
-        }, out SecurityToken validatedToken);
-
-        return (JwtSecurityToken)validatedToken;
-      }
-      catch (SecurityTokenExpiredException exception)
+      tokenHandler.ValidateToken(token, new TokenValidationParameters
       {
-        throw exception;
-      }
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero,
+      }, out SecurityToken validatedToken);
+
+      return (JwtSecurityToken)validatedToken;
     }
   }
 }

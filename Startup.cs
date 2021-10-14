@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using FluentValidation.AspNetCore;
 using _99phantram.Models;
 using FluentValidation;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace _99phantram
 {
@@ -33,6 +34,7 @@ namespace _99phantram
         options.AddPolicy(name: AllowSpecificOrigins, builder =>
         {
           builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowCredentials().AllowAnyHeader();
+          builder.WithOrigins("https://*.99phantram.com").SetIsOriginAllowedToAllowWildcardSubdomains().AllowAnyMethod().AllowCredentials().AllowAnyHeader();
         });
       });
       services.AddFluentValidation();
@@ -59,6 +61,11 @@ namespace _99phantram
         app.UseSwagger();
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "99phantram_backend v1"));
       }
+
+      app.UseForwardedHeaders(new ForwardedHeadersOptions
+      {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+      });
 
       app.UseCors(AllowSpecificOrigins);
       app.UseRouting();

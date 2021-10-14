@@ -25,7 +25,6 @@ namespace _99phantram.Entities
     public string Url { get; set; }
     [BsonElement("created_at")]
     [BsonRequired]
-    [BsonRepresentation(BsonType.Timestamp)]
     public DateTime CreatedAt { get; set; }
   }
 }

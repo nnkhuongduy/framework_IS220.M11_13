@@ -5,7 +5,6 @@ using _99phantram.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using MongoDB.Bson;
 
 namespace _99phantram.Controllers.App
 {
@@ -24,13 +23,13 @@ namespace _99phantram.Controllers.App
 
     [HttpGet("selectable")]
     [TypeFilter(typeof(AppAuthorize))]
-    public ActionResult<List<BsonDocument>> GetSelectableRoles()
+    public ActionResult<List<Role>> GetSelectableRoles()
     {
       var user = (User)HttpContext.Items["User"];
       var query = Builders<Role>.Filter.In("Id", user.Role.SelectableRoles);
       var projection = Builders<Role>.Projection.Exclude(r => r.SelectableRoles);
       
-      return _roleService.GetRoles(query).Project(projection).ToList();
+      return _roleService.GetRoles(query).Project<Role>(projection).ToList<Role>();
     }
   }
 }

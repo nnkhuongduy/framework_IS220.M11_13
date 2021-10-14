@@ -42,5 +42,11 @@ namespace _99phantram.Services
     {
       return _collection.Find(query);
     }
+
+    public void CreateUser(User user) {
+      user.CreatedAt = DateTime.Now;
+  
+      _collection.InsertOne(user);
+    }
   }
 }
