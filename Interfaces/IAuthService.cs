@@ -10,7 +10,7 @@ namespace _99phantram.Interfaces
 
     bool VerifyPassword(string hash, string password);
 
-    AuthResponse Authenticate(UserBase employee, bool isRemember = false);
+    AuthResponse Authenticate(User user, bool isRemember = false);
 
     JwtSecurityToken VerifyToken(string token);
   }

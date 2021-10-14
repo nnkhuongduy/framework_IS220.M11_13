@@ -15,11 +15,26 @@ namespace _99phantram.Services
       _collection = databaseContext.Database.GetCollection<Role>("roles");
     }
 
-    public Role FindOne(Expression<Func<Role, bool>> expression)
+    public IFindFluent<Role, Role> GetRole(Expression<Func<Role, bool>> expression)
     {
-      var filter = Builders<Role>.Filter.Where(expression);
+      var query = Builders<Role>.Filter.Where(expression);
+      return _collection.Find(query);
+    }
 
-      return _collection.Find(filter).FirstOrDefault();
+    public IFindFluent<Role, Role> GetRole(FilterDefinition<Role> query)
+    {
+      return _collection.Find(query);
+    }
+
+    public IFindFluent<Role, Role> GetRoles(Expression<Func<Role, bool>> expression)
+    {
+      var query = Builders<Role>.Filter.Where(expression);
+      return _collection.Find(query);
+    }
+
+    public IFindFluent<Role, Role> GetRoles(FilterDefinition<Role> query)
+    {
+      return _collection.Find(query);
     }
   }
 }

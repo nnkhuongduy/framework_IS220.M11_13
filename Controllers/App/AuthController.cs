@@ -4,6 +4,7 @@ using _99phantram.Models;
 using _99phantram.Entities;
 using _99phantram.Helpers;
 using _99phantram.Interfaces;
+using MongoDB.Driver;
 
 namespace _99phantram.Controllers.App
 {
@@ -11,13 +12,13 @@ namespace _99phantram.Controllers.App
   [ApiController]
   public class AuthController : ControllerBase
   {
-    private IEmployeeService _employeeService;
+    private IUserService _userService;
     private ILogger _logger;
     private IAuthService _authService;
 
-    public AuthController(IEmployeeService employeeService, IAuthService authService, ILogger<AuthController> logger)
+    public AuthController(IUserService userService, IAuthService authService, ILogger<AuthController> logger)
     {
-      _employeeService = employeeService;
+      _userService = userService;
       _logger = logger;
       _authService = authService;
     }
@@ -26,7 +27,7 @@ namespace _99phantram.Controllers.App
     [Route("login")]
     public ActionResult<AuthResponse> Login(AuthRequest request)
     {
-      var employee = _employeeService.FindOne(e => e.Username == request.Username);
+      var employee = _userService.GetUser(e => e.Email == request.Email).FirstOrDefault();
 
       if (employee == null)
       {
@@ -44,10 +45,10 @@ namespace _99phantram.Controllers.App
     }
 
     [HttpGet]
-    [TypeFilter(typeof(EmployeeAuthorize))]
-    public ActionResult<Employee> Authenticate()
+    [TypeFilter(typeof(AppAuthorize))]
+    public ActionResult<User> Authenticate()
     {
-      return (Employee)HttpContext.Items["Employee"];
+      return (User)HttpContext.Items["User"];
     }
   }
 }
