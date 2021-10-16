@@ -1,6 +1,6 @@
 using System;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Entities;
 
 namespace _99phantram.Entities
 {
@@ -22,45 +22,39 @@ namespace _99phantram.Entities
     VERIFIED,
     ARCHIVED
   }
-  public class User
+
+  [Collection("users")]
+  public class User : Entity, ICreatedOn, IModifiedOn
   {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
-    [BsonElement("email")]
-    [BsonRequired]
+    [Field("email")]
     public string Email { get; set; }
-    [BsonElement("password")]
-    [BsonRequired]
+    [Field("password")]
     public string Password { get; set; }
-    [BsonElement("first_name")]
-    [BsonRequired]
+    [Field("first_name")]
     public string FirstName { get; set; }
-    [BsonElement("last_name")]
-    [BsonRequired]
+    [Field("last_name")]
     public string LastName { get; set; }
-    [BsonElement("sex")]
-    [BsonRequired]
+    [Field("sex")]
     public Gender Sex { get; set; }
-    [BsonElement("address")]
+    [Field("address")]
     public string Address { get; set; }
-    [BsonElement("phone_number")]
+    [Field("phone_number")]
     public string PhoneNumber { get; set; }
-    [BsonElement("avatar")]
-    public UploadedFile Avatar { get; set; }
-    [BsonElement("oauth")]
+    [Field("avatar")]
+    public string Avatar { get; set; }
+    [Field("oauth")]
     [BsonDefaultValue(false)]
     public bool Oauth { get; set; }
-    [BsonElement("oauth_provider")]
+    [Field("oauth_provider")]
     public OAuthProvider OauthProvider { get; set; }
-    [BsonElement("role")]
-    [BsonRequired]
+    [Field("role")]
     public Role Role { get; set; }
-    [BsonElement("status")]
+    [Field("status")]
     [BsonDefaultValue(0)]
     public UserStatus Status { get; set; }
-    [BsonElement("created_at")]
-    [BsonRequired]
-    public DateTime CreatedAt { get; set; }
+    [Field("created_on")]
+    public DateTime CreatedOn { get; set; }
+    [Field("modified_on")]
+    public DateTime ModifiedOn { get; set; }
   }
 }
