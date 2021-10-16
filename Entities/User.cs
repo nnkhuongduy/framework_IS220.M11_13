@@ -47,7 +47,8 @@ namespace _99phantram.Entities
     [BsonElement("phone_number")]
     public string PhoneNumber { get; set; }
     [BsonElement("avatar")]
-    public UploadedFile Avatar { get; set; }
+    [BsonRepresentation(BsonType.String)]
+    public string Avatar { get; set; }
     [BsonElement("oauth")]
     [BsonDefaultValue(false)]
     public bool Oauth { get; set; }
