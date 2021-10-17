@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using _99phantram.Entities;
 using _99phantram.Helpers;
 using _99phantram.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MongoDB.Entities;
 using MongoDB.Driver;
 
 namespace _99phantram.Controllers.App
@@ -23,13 +25,11 @@ namespace _99phantram.Controllers.App
 
     [HttpGet("selectable")]
     [TypeFilter(typeof(AppAuthorize))]
-    public ActionResult<List<Role>> GetSelectableRoles()
+    public async Task<ActionResult<List<Role>>> GetSelectableRoles()
     {
       var user = (User)HttpContext.Items["User"];
-      var query = Builders<Role>.Filter.In("Id", user.Role.SelectableRoles);
-      var projection = Builders<Role>.Projection.Exclude(r => r.SelectableRoles);
-      
-      return _roleService.GetRoles(query).Project<Role>(projection).ToList<Role>();
+
+      return await DB.Find<Role>().Match(role => role.In("_id", user.Role.SelectableRoles)).Project(role => role.Exclude("selectable_roles")).ExecuteAsync();
     }
   }
 }
