@@ -24,7 +24,7 @@ namespace _99phantram.Controllers.Apps
 
     [HttpGet]
     [TypeFilter(typeof(AppAuthorize))]
-    public async Task<ActionResult<List<User>>> GetUsers()
+    public async Task<ActionResult<List<User>>> GetAllUsers()
     {
       return await DB.Find<User>().Match(_ => true).Sort(u => u.CreatedOn, Order.Descending).Project(user => user.Exclude("password")).ExecuteAsync();
     }
@@ -41,7 +41,6 @@ namespace _99phantram.Controllers.Apps
       }
 
       return NotFound(new HttpError(false, 404, "Không tìm thấy người dùng!"));
-
     }
 
     [HttpPost]
@@ -69,7 +68,7 @@ namespace _99phantram.Controllers.Apps
       user.Oauth = false;
       user.OauthProvider = OAuthProvider.None;
       user.Avatar = body.Avatar;
-
+ 
       await user.SaveAsync();
 
       return StatusCode(201);
