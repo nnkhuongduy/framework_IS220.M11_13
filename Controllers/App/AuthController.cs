@@ -4,7 +4,8 @@ using _99phantram.Models;
 using _99phantram.Entities;
 using _99phantram.Helpers;
 using _99phantram.Interfaces;
-using MongoDB.Driver;
+using System.Threading.Tasks;
+using MongoDB.Entities;
 
 namespace _99phantram.Controllers.App
 {
@@ -25,9 +26,9 @@ namespace _99phantram.Controllers.App
 
     [HttpPost]
     [Route("login")]
-    public ActionResult<AuthResponse> Login(AuthRequest request)
+    public async Task<ActionResult<AuthResponse>> Login(AuthRequest request)
     {
-      var employee = _userService.GetUser(e => e.Email == request.Email).FirstOrDefault();
+      var employee = await DB.Find<User>().Match(e => e.Email == request.Email).ExecuteFirstAsync();
 
       if (employee == null)
       {

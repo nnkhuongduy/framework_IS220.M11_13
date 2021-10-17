@@ -1,12 +1,13 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using _99phantram.Entities;
 using _99phantram.Helpers;
 using _99phantram.Interfaces;
 using _99phantram.Models;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
+using MongoDB.Entities;
 
-namespace _99phantram.Controllers.App
+namespace _99phantram.Controllers.Apps
 {
   [Route("/api/app/users")]
   [ApiController]
@@ -25,16 +26,16 @@ namespace _99phantram.Controllers.App
 
     [HttpGet]
     [TypeFilter(typeof(AppAuthorize))]
-    public ActionResult<List<User>> GetAllUsers()
+    public async Task<ActionResult<List<User>>> GetAllUsers()
     {
-      return _userService.GetUsers(Builders<User>.Filter.Empty).SortByDescending(u => u.CreatedAt).Project<User>(Builders<User>.Projection.Exclude(u => u.Password)).ToList();
+      return await DB.Find<User>().Match(_ => true).Sort(u => u.CreatedOn, Order.Descending).ExecuteAsync();
     }
 
     [HttpGet("{id:length(24)}")]
     [TypeFilter(typeof(AppAuthorize))]
-    public ActionResult<User> getUser(string id)
+    public async Task<ActionResult<User>> getUser(string id)
     {
-      var user = _userService.GetUser(u => u.Id == id).Project<User>(Builders<User>.Projection.Exclude(u => u.Password)).FirstOrDefault();
+      var user = await DB.Find<User>().Match(user => user.ID == id).Project(user => user.Exclude("password")).ExecuteFirstAsync();
 
       if (user != null)
       {
@@ -42,13 +43,14 @@ namespace _99phantram.Controllers.App
       }
 
       return NotFound(new HttpError(false, 404, "User not found"));
+      
     }
 
     [HttpPost]
     [TypeFilter(typeof(AppAuthorize))]
-    public ActionResult CreateUser(PostUserBody body)
+    public async Task<ActionResult> CreateUser(PostUserBody body)
     {
-      var role = _roleService.GetRole((r) => r.Id.Equals(body.Role)).FirstOrDefault();
+      var role = await DB.Find<Role>().Match(role => role.ID.Equals(body.Role)).ExecuteFirstAsync();
 
       if (role == null)
       {
@@ -70,7 +72,7 @@ namespace _99phantram.Controllers.App
       user.OauthProvider = OAuthProvider.None;
       user.Avatar = body.Avatar;
 
-      _userService.CreateUser(user);
+      await user.SaveAsync();
 
       return StatusCode(201);
     }

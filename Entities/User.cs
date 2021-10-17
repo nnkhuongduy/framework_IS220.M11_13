@@ -1,6 +1,6 @@
 using System;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Entities;
 
 namespace _99phantram.Entities
 {
@@ -22,38 +22,39 @@ namespace _99phantram.Entities
     VERIFIED,
     ARCHIVED
   }
-  public class User
+
+  [Collection("users")]
+  public class User : Entity, ICreatedOn, IModifiedOn
   {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
-    [BsonElement("email")]
+    [Field("email")]
     public string Email { get; set; }
-    [BsonElement("password")]
+    [Field("password")]
     public string Password { get; set; }
-    [BsonElement("first_name")]
+    [Field("first_name")]
     public string FirstName { get; set; }
-    [BsonElement("last_name")]
+    [Field("last_name")]
     public string LastName { get; set; }
-    [BsonElement("sex")]
+    [Field("sex")]
     public Gender Sex { get; set; }
-    [BsonElement("address")]
+    [Field("address")]
     public string Address { get; set; }
-    [BsonElement("phone_number")]
+    [Field("phone_number")]
     public string PhoneNumber { get; set; }
-    [BsonElement("avatar")]
+    [Field("avatar")]
     public string Avatar { get; set; }
-    [BsonElement("oauth")]
+    [Field("oauth")]
     [BsonDefaultValue(false)]
     public bool Oauth { get; set; }
-    [BsonElement("oauth_provider")]
+    [Field("oauth_provider")]
     public OAuthProvider OauthProvider { get; set; }
-    [BsonElement("role")]
+    [Field("role")]
     public Role Role { get; set; }
-    [BsonElement("status")]
+    [Field("status")]
     [BsonDefaultValue(0)]
     public UserStatus Status { get; set; }
-    [BsonElement("created_at")]
-    public DateTime CreatedAt { get; set; }
+    [Field("created_on")]
+    public DateTime CreatedOn { get; set; }
+    [Field("modified_on")]
+    public DateTime ModifiedOn { get; set; }
   }
 }
