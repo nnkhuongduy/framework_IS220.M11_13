@@ -27,7 +27,21 @@ namespace _99phantram.Controllers.App
     [TypeFilter(typeof(AppAuthorize))]
     public ActionResult<List<User>> GetAllUsers()
     {
-      return _userService.GetUsers((u) => true).SortByDescending(u => u.CreatedAt).ToList();
+      return _userService.GetUsers(Builders<User>.Filter.Empty).SortByDescending(u => u.CreatedAt).Project<User>(Builders<User>.Projection.Exclude(u => u.Password)).ToList();
+    }
+
+    [HttpGet("{id:length(24)}")]
+    [TypeFilter(typeof(AppAuthorize))]
+    public ActionResult<User> getUser(string id)
+    {
+      var user = _userService.GetUser(u => u.Id == id).Project<User>(Builders<User>.Projection.Exclude(u => u.Password)).FirstOrDefault();
+
+      if (user != null)
+      {
+        return user;
+      }
+
+      return NotFound(new HttpError(false, 404, "User not found"));
     }
 
     [HttpPost]
@@ -54,10 +68,10 @@ namespace _99phantram.Controllers.App
       user.Status = body.Status;
       user.Oauth = false;
       user.OauthProvider = OAuthProvider.None;
-      user.Avatar = null;
+      user.Avatar = body.Avatar;
 
       _userService.CreateUser(user);
-      
+
       return StatusCode(201);
     }
   }

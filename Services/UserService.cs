@@ -26,7 +26,7 @@ namespace _99phantram.Services
       var query = Builders<User>.Filter.Where(expression);
       return _collection.Find(query);
     }
-    
+
     public IFindFluent<User, User> GetUser(FilterDefinition<User> query)
     {
       return _collection.Find(query);
@@ -43,9 +43,10 @@ namespace _99phantram.Services
       return _collection.Find(query);
     }
 
-    public void CreateUser(User user) {
+    public void CreateUser(User user)
+    {
       user.CreatedAt = DateTime.Now;
-  
+
       _collection.InsertOne(user);
     }
   }

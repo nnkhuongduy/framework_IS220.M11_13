@@ -40,6 +40,7 @@ namespace _99phantram
       services.AddFluentValidation();
 
       services.AddTransient<IValidator<PostUserBody>, PostUserBodyValidator>();
+      services.AddTransient<IValidator<PutUserBody>, PutUserBodyValidator>();
       services.AddSingleton<IDatabaseContextOptions, DatabaseContextOptions>();
       services.AddSingleton<IDatabaseContext, DatabaseContext>();
       services.AddSingleton<IAuthService, AuthService>();
