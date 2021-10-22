@@ -6,7 +6,7 @@ using MongoDB.Entities;
 namespace _99phantram.Entities
 
 {
-	public enum status
+	public enum Status
 	{
 		CREATED = 1,
 		ACTIVE = 2,
@@ -15,7 +15,7 @@ namespace _99phantram.Entities
 		ARCHIVED = 5
 	}
 	
-	public enum product_status 
+	public enum Product_status 
 	{
 		99 = 1,
 		90 = 2,
@@ -24,30 +24,30 @@ namespace _99phantram.Entities
 	}
 
 	[Collection("supplies")]
-		public class supplies : Entity, ICreatedOn, IModifiedOn
+		public class Supplies : Entity, ICreatedOn, IModifiedOn
 		{
 			[Field("owner")]
-			public users owner { get; set; }
+			public Users Owner { get; set; }
 			[Field("name")]
-			public string name { get; set; }
+			public string Name { get; set; }
 			[Field("price")]
-			public long price { get; set }
+			public long Price { get; set }
 			[Field("description")]
-			public string description { get; set; }
+			public string Description { get; set; }
 			[Field("service")]
-			public service[] services { get; set; }
+			public Service[] Services { get; set; }
 			[Field("specs")]
-			public specs[] specs { get; set; }
+			public Specs[] Specs { get; set; }
 			[Field("images")]
-			public string[] images { get; set; }
+			public string[] Images { get; set; }
 			[Field("categories")]
-			public categories[] categories { get; set; }
+			public Categories[] Categories { get; set; }
 			[Field("locations")]
-			public location[] locations { get; set; }
+			public Location[] Locations { get; set; }
 			[Field("product_status")]
-			public product_status product_status { get; set; }
+			public Product_status Product_status { get; set; }
 			[Field("status")]
-			public status status { get; set; }
+			public Status Status { get; set; }
 			[Field("created_on")]
 			public DateTime CreatedOn { get; set; }
 			[Field("modified_on")]

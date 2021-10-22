@@ -6,21 +6,21 @@ using MongoDB.Entities;
 namespace _99phantram.Entities
 
 {
-	public enum status
+	public enum Status
 	{
 		ACTIVE = 1,
 		DEACTIVE = 2
 	}
 
 	[Collection("payment_account")]
-		public class payment_account : Entity, ICreatedOn, IModifiedOn
+		public class Payment_account : Entity, ICreatedOn, IModifiedOn
 		{
 			[Field("user")]
-			public objectId[] user { get; set; }
+			public objectId[] User { get; set; }
 			[Field("balance")]
-			public long balance { get; set }
+			public long Balance { get; set }
 			[Field("withdraw_methods")]
-			public ObjectId[] withdraw_methods { get; set; }
+			public ObjectId[] Withdraw_methods { get; set; }
 			[Field("modified_on")]
 			public DateTime ModifiedOn { get; set; }
 			

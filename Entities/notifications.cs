@@ -6,7 +6,7 @@ using MongoDB.Entities;
 namespace _99phantram.Entities
 
 {
-	public enum notification
+	public enum Notification_level
 	{
 		SUCCESS = 1,
 		WARNING = 2,
@@ -14,17 +14,17 @@ namespace _99phantram.Entities
 	}
 
 	[Collection("notifications")]
-		public class notifications : Entity, ICreatedOn, IModifiedOn
+		public class Notifications : Entity, ICreatedOn, IModifiedOn
 		{
 			[Field("user")]
 			public objectId[] user { get; set; }
 			[Field("content")]
 			public string Name { get; set; }
 			[Field("notification_level")]
-			public notification_level notification_level { get; set; }
+			public Notification_level Notification_level { get; set; }
 			[Field("seen")]
 			[BsonDefaultValue(false)]
-			public bool seen { get; set; }
+			public bool Seen { get; set; }
 			[Field("created_on")]
 			public DateTime CreatedOn { get; set; }
 		}
