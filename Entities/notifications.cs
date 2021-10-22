@@ -17,7 +17,7 @@ namespace _99phantram.Entities
 		public class Notifications : Entity, ICreatedOn, IModifiedOn
 		{
 			[Field("user")]
-			public objectId[] user { get; set; }
+			public objectId[] User { get; set; }
 			[Field("content")]
 			public string Name { get; set; }
 			[Field("notification_level")]
