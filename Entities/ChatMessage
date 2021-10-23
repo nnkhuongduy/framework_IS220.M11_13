@@ -4,12 +4,11 @@ using MongoDB.Bson;
 using MongoDB.Entities;
 
 namespace _99phantram.Entities
+{
 
-[Collection("chat_message")]
-  public class ChatMessage : Entity, ICreatedOn, IModifiedOn
+[Collection("chat_messages")]
+  public class ChatMessages : Entity, ICreatedOn, IModifiedOn
   {
-    [Field("chat")]
-    public Chats Chat { get; set; }
     [Field("sender")]
     public User Sender { get; set; }
     [Field("content")]
@@ -19,3 +18,4 @@ namespace _99phantram.Entities
     [Field("modified_on")]
     public DateTime ModifiedOn { get; set; }
   }
+}

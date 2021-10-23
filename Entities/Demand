@@ -4,28 +4,28 @@ using MongoDB.Bson;
 using MongoDB.Entities;
 
 namespace _99phantram.Entities
-
 {
-	public enum Status
+
+	public enum DemandStatus
 	{
-		CREATED = 1,
-		ACTIVE = 2,
-        EXPIRED =3
+		CREATED,
+		ACTIVE,
+        EXPIRED,
 	}
 	
 	public enum ProductStatus 
 	{
-		99,
-		90,
-		80,        
-		50
+		_99,
+		_90,
+		_80,        
+		_50
 	}
 
 	[Collection("demands")]
-		public class Demands : Entity, ICreatedOn, IModifiedOn
+		public class Demand : Entity, ICreatedOn, IModifiedOn
 		{
 			[Field("owner")]
-			public Users Owner { get; set; }
+			public ObjectId Owner { get; set; }
 			[Field("name")]
 			public string Name { get; set; }
 			[Field("price")]
@@ -35,17 +35,15 @@ namespace _99phantram.Entities
 			[Field("service")]
 			public Service[] Services { get; set; }
 			[Field("specs")]
-			public Specs[] Specs { get; set; }
-			[Field("images")]
-			public string[] Images { get; set; }
+			public Spec[] Specs { get; set; }
 			[Field("categories")]
-			public Categories[] Categories { get; set; }
+			public Category[] Categories { get; set; }
 			[Field("locations")]
 			public Location[] Locations { get; set; }
 			[Field("product_status")]
 			public ProductStatus ProductStatus { get; set; }
 			[Field("status")]
-			public Status Status { get; set; }
+			public DemandStatus Status { get; set; }
 			[Field("created_on")]
 			public DateTime CreatedOn { get; set; }
 			[Field("modified_on")]
