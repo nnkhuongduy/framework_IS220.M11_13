@@ -36,7 +36,7 @@ namespace _99phantram.Services
       var key = Encoding.ASCII.GetBytes(_config["JWT:SecretKey"]);
       var tokenDescriptor = new SecurityTokenDescriptor
       {
-        Subject = new ClaimsIdentity(new[] { new Claim("id", indentifier.Id) }),
+        Subject = new ClaimsIdentity(new[] { new Claim("id", indentifier.ID) }),
         Expires = DateTime.UtcNow.AddHours(isRemember ? 24 : 2),
         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
       };

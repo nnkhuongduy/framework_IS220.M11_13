@@ -1,6 +1,7 @@
+using System;
 using System.Collections.Generic;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Entities;
 
 namespace _99phantram.Entities
 {
@@ -10,18 +11,19 @@ namespace _99phantram.Entities
     APP = 2,
     ALL = 3
   }
-  public class Role
+  
+  [Collection("roles")]
+  public class Role : Entity, ICreatedOn, IModifiedOn
   {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
-    [BsonRequired]
-    [BsonElement("name")]
+    [Field("name")]
     public string Name { get; set; }
-    [BsonElement("role_level")]
-    [BsonRequired]
+    [Field("role_level")]
     public RoleLevel RoleLevel { get; set; }
-    [BsonElement("selectable_roles")]
+    [Field("selectable_roles")]
     public ObjectId[] SelectableRoles { get; set; }
+    [Field("created_on")]
+    public DateTime CreatedOn { get; set; }
+    [Field("modified_on")]
+    public DateTime ModifiedOn { get; set; }
   }
 }
