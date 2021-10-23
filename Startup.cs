@@ -43,7 +43,7 @@ namespace _99phantram
       services.AddFluentValidation();
 
       services.AddTransient<IValidator<PostUserBody>, PostUserBodyValidator>();
-      services.AddSingleton<IAmazonS3Context, AmazonS3Context>();
+      services.AddTransient<IValidator<PutUserBody>, PutUserBodyValidator>();
       services.AddSingleton<IAuthService, AuthService>();
       services.AddSingleton<IRoleService, RoleService>();
       services.AddSingleton<IUserService, UserService>();
