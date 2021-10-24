@@ -5,7 +5,7 @@ using MongoDB.Entities;
 namespace _99phantram.Entities
 {
     [Collection("specs")]
-    public class Spec : Entity, ICreatedOn, IModifiedOn
+    public class Spec : Entity
     {
         [Field("name")]
         public string Name { get; set; }
