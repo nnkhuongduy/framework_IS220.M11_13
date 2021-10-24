@@ -1,6 +1,7 @@
 ﻿using System;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Entities;
+using MongoDB.Bson
 
 namespace _99phantram.Entities
 {
@@ -13,7 +14,7 @@ namespace _99phantram.Entities
     public class Service : Entity, ICreatedOn, IModifiedOn
     {
         [Field("service_type")]
-        public service_type ServiceType { get; set; }
+        public ObjectId ServiceType { get; set; }
         [Field("value")]
         public object Value { get; set; }
         [Field("status")]
