@@ -1,6 +1,7 @@
 ﻿using System;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Entities;
+using MongoDB.Bson;
 
 namespace _99phantram.Entities
 {
@@ -16,7 +17,7 @@ namespace _99phantram.Entities
         ARCHIVED
     }
     [Collection("categories")]
-    public class Category : Entity, ICreatedOn, IModifiedOn
+    public class Category : Entity
     {
         [Field("name")]
         public string Name { get; set; }
