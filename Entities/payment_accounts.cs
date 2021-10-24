@@ -8,19 +8,19 @@ namespace _99phantram.Entities
 {
 	public enum Status
 	{
-		ACTIVE = 1,
-		DEACTIVE = 2
+		ACTIVE,
+		DEACTIVE
 	}
 
 	[Collection("payment_account")]
-		public class Payment_account : Entity, ICreatedOn, IModifiedOn
+		public class PaymentAccount : Entity, IModifiedOn
 		{
 			[Field("user")]
-			public objectId[] User { get; set; }
+			public ObjectId User { get; set; }
 			[Field("balance")]
-			public long Balance { get; set }
+			public long Balance { get; set; }
 			[Field("withdraw_methods")]
-			public ObjectId[] Withdraw_methods { get; set; }
+			public object[] WithdrawMethods { get; set; }
 			[Field("modified_on")]
 			public DateTime ModifiedOn { get; set; }
 			

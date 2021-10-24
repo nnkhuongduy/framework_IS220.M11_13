@@ -6,22 +6,22 @@ using MongoDB.Entities;
 namespace _99phantram.Entities
 
 {
-	public enum Notification_level
+	public enum NotificationLevel
 	{
-		SUCCESS = 1,
-		WARNING = 2,
-		ADANGER = 3
+		SUCCESS,
+		WARNING,
+		ADANGER
 	}
 
 	[Collection("notifications")]
-		public class Notifications : Entity, ICreatedOn, IModifiedOn
+		public class Notification : Entity, ICreatedOn, IModifiedOn
 		{
 			[Field("user")]
 			public objectId[] User { get; set; }
 			[Field("content")]
-			public string Name { get; set; }
+			public string Content { get; set; }
 			[Field("notification_level")]
-			public Notification_level Notification_level { get; set; }
+			public NotificationLevel Notification_level { get; set; }
 			[Field("seen")]
 			[BsonDefaultValue(false)]
 			public bool Seen { get; set; }

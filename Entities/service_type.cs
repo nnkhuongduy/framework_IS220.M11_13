@@ -6,21 +6,21 @@ using MongoDB.Entities;
 namespace _99phantram.Entities
 
 {
-	public enum Status
+	public enum ServiceTypeStatus
 	{
-		ACTIVE = 1,
-		DEACTIVE = 2
+		ACTIVE,
+		DEACTIVE
 	}
 
-	[Collection("service_type")]
-		public class Service_type : Entity, ICreatedOn, IModifiedOn
+	[Collection("service_types")]
+		public class ServiceType : Entity
 		{
 			[Field("name")]
-			public ObjectId[] Name { get; set; }
+			public string Name { get; set; }
 			[Field("status")]
-			public Status Status { get; set; }
-			[Field("Value")]
-			public object Value { get; set }
+			public ServiceTypeStatus Status { get; set; }
+			[Field("value")]
+			public object Value { get; set; }
 			
 		}
 	}
