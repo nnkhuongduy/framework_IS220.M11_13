@@ -14,16 +14,15 @@ namespace _99phantram.Entities
 	}
 
 	[Collection("notifications")]
-		public class Notification : Entity, ICreatedOn, IModifiedOn
+		public class Notification : Entity, ICreatedOn
 		{
 			[Field("user")]
-			public objectId[] User { get; set; }
+			public ObjectId[] User { get; set; }
 			[Field("content")]
 			public string Content { get; set; }
 			[Field("notification_level")]
 			public NotificationLevel Notification_level { get; set; }
 			[Field("seen")]
-			[BsonDefaultValue(false)]
 			public bool Seen { get; set; }
 			[Field("created_on")]
 			public DateTime CreatedOn { get; set; }
