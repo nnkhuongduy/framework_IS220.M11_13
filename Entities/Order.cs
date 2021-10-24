@@ -12,7 +12,7 @@ namespace _99phantram.Entities
         DECLINED
     }
     [Collection("orders")]
-    public class Order : Entity, ICreatedOn, IModifiedOn
+    public class Order : Entity, ICreatedOn
     {
         [Field("buyer")]
         public User Buyer { get; set; }
