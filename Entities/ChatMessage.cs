@@ -7,7 +7,7 @@ namespace _99phantram.Entities
 {
 
 [Collection("chat_messages")]
-  public class ChatMessages : Entity, ICreatedOn, IModifiedOn
+  public class ChatMessage : Entity, ICreatedOn, IModifiedOn
   {
     [Field("sender")]
     public User Sender { get; set; }
