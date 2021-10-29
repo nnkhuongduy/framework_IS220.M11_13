@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
-using MongoDB.Bson;
 using MongoDB.Entities;
 
 namespace _99phantram.Entities
 {
-
-[Collection("chat_messages")]
+  [Collection("chat_messages")]
   public class ChatMessage : Entity, ICreatedOn, IModifiedOn
   {
     [Field("sender")]
