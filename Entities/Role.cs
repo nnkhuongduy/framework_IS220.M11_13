@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Entities;
 
@@ -11,7 +10,7 @@ namespace _99phantram.Entities
     APP = 2,
     ALL = 3
   }
-  
+
   [Collection("roles")]
   public class Role : Entity, ICreatedOn, IModifiedOn
   {

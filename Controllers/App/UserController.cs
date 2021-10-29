@@ -26,7 +26,7 @@ namespace _99phantram.Controllers.Apps
     [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<List<User>>> GetAllUsers()
     {
-      return await DB.Find<User>().Match(_ => true).Sort(u => u.CreatedOn, Order.Descending).Project(user => user.Exclude("password")).ExecuteAsync();
+      return await DB.Find<User>().Match(_ => true).Sort(u => u.CreatedOn, MongoDB.Entities.Order.Descending).Project(user => user.Exclude("password")).ExecuteAsync();
     }
 
     [HttpGet("{id:length(24)}")]
