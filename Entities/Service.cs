@@ -1,7 +1,7 @@
 ﻿using System;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Entities;
-using MongoDB.Bson
+using MongoDB.Bson;
 
 namespace _99phantram.Entities
 {
