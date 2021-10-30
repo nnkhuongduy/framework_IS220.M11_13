@@ -1,6 +1,3 @@
-using _99phantram.Interfaces;
-using _99phantram.Helpers;
-using _99phantram.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,13 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using FluentValidation.AspNetCore;
-using _99phantram.Models;
-using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
-using System.Threading.Tasks;
-using MongoDB.Entities;
-using MongoDB.Driver;
 using Microsoft.Extensions.Logging;
+
+using _99phantram.Helpers;
+using _99phantram.Services;
 
 namespace _99phantram
 {
@@ -42,11 +37,7 @@ namespace _99phantram
       });
       services.AddFluentValidation();
 
-      services.AddTransient<IValidator<PostUserBody>, PostUserBodyValidator>();
-      services.AddTransient<IValidator<PutUserBody>, PutUserBodyValidator>();
-      services.AddSingleton<IAuthService, AuthService>();
-      services.AddSingleton<IRoleService, RoleService>();
-      services.AddSingleton<IUserService, UserService>();
+      services.Add99PhantramServices();
 
       services.AddControllers().AddNewtonsoftJson();
       services.AddSwaggerGen(c =>
@@ -58,15 +49,7 @@ namespace _99phantram
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
     {
-      IConfiguration appsettings = Configuration.GetSection("DatabaseContextOptions");
-      var connectionString = "mongodb+srv://" + Configuration["Database:Username"] + ":" + Configuration["Database:Password"] + "@" + appsettings["ConnectionString"] + "/" + "?retryWrites=true&w=majority";
-
-      Task.Run(async () =>
-      {
-        await DB.InitAsync(appsettings["DatabaseName"], MongoClientSettings.FromConnectionString(connectionString));
-      }).GetAwaiter().GetResult();
-
-      logger.LogInformation("Successfully connecting to the MongoDB");
+      MongoDBContext.InitMongoDB(Configuration, logger);
 
       if (env.IsDevelopment())
       {
