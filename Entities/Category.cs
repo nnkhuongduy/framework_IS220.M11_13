@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Entities;
 using MongoDB.Bson;
+using System.Collections.Generic;
 
 namespace _99phantram.Entities
 {
@@ -20,15 +21,17 @@ namespace _99phantram.Entities
   {
     [Field("name")]
     public string Name { get; set; }
+    [Field("image")]
+    public string Image { get; set; }
     [Field("category_level")]
     [BsonDefaultValue(0)]
-    public CategoryLevel Categorylevel { get; set; }
+    public CategoryLevel CategoryLevel { get; set; }
     [Field("status")]
     [BsonDefaultValue(0)]
     public CategoryStatus Status { get; set; }
     [Field("specs")]
-    public Spec[] Specs { get; set; }
+    public List<Spec> Specs { get; set; }
     [Field("sub_categories")]
-    public ObjectId[] SubCategories { get; set; }
+    public List<ObjectId> SubCategories { get; set; }
   }
 }
