@@ -1,10 +1,10 @@
-using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
 using _99phantram.Entities;
 using _99phantram.Helpers;
+using _99phantram.Interfaces;
 using _99phantram.Models;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Entities;
 
 namespace _99phantram.Controllers.Apps
 {
@@ -12,82 +12,59 @@ namespace _99phantram.Controllers.Apps
   [ApiController]
   public class SpecController : ControllerBase
   {
+    private readonly ISpecService _specService;
+
+    public SpecController(ISpecService specService)
+    {
+      _specService = specService;
+    }
+
     [HttpPost("{id:length(24)}")]
     [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult> CreateSpec(SpecBody body, string id)
     {
-      Category category = await DB.Find<Category>().MatchID(id).ExecuteFirstAsync();
-
-      if (category == null)
+      try
       {
-        return BadRequest(new HttpError(false, 400, "Danh mục sản phẩm không tìm thấy!"));
+        await _specService.CreateSpec(id, body);
+
+        return StatusCode(201);
       }
-
-      Spec spec = new Spec();
-      spec.Name = body.Name;
-      spec.Value = "";
-      spec.Required = body.Required;
-      category.Specs.Add(spec);
-
-      await spec.SaveAsync();
-
-      await DB.Update<Category>().MatchID(id).Modify(_ => _.Specs, category.Specs).ExecuteAsync();
-
-      return StatusCode(201);
+      catch (HttpError error)
+      {
+        return BadRequest(error);
+      }
     }
 
     [HttpPut("{categoryId:length(24)}/{specId:length(24)}")]
     [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<Spec>> UpdateSpec(SpecBody body, string categoryId, string specId)
     {
-      var category = await DB.Find<Category>().MatchID(categoryId).ExecuteFirstAsync();
-
-      if (category == null)
+      try
       {
-        return BadRequest(new HttpError(false, 400, "Danh mục sản phẩm không tìm thấy!"));
+        await _specService.UpdateSpec(categoryId, specId, body);
+
+        return StatusCode(204);
       }
-
-      var spec = category.Specs.FirstOrDefault(_ => _.ID == specId);
-
-      if (spec == null)
+      catch (HttpError error)
       {
-        return BadRequest(new HttpError(false, 400, "Chi tiết danh mục không tìm thấy!"));
+        return BadRequest(error);
       }
-
-      var newSpec = await DB.UpdateAndGet<Spec>().MatchID(spec.ID).Modify(_ => _.Name, body.Name).Modify(_ => _.Required, body.Required).ExecuteAsync();
-      var index = category.Specs.FindIndex(_ => _.ID == specId);
-      category.Specs[index] = newSpec;
-
-      await DB.Update<Category>().MatchID(categoryId).Modify(_ => _.Specs, category.Specs).ExecuteAsync();
-
-      return StatusCode(204);
     }
 
     [HttpDelete("{categoryId:length(24)}/{specId:length(24)}")]
     [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<Spec>> DeleteSpec(string categoryId, string specId)
     {
-      var category = await DB.Find<Category>().MatchID(categoryId).ExecuteFirstAsync();
-
-      if (category == null)
+      try
       {
-        return BadRequest(new HttpError(false, 400, "Danh mục sản phẩm không tìm thấy!"));
+        await _specService.DeleteSpec(categoryId, specId);
+
+        return StatusCode(204);
       }
-
-      var spec = category.Specs.FirstOrDefault(_ => _.ID == specId);
-
-      if (spec == null)
+      catch (HttpError error)
       {
-        return BadRequest(new HttpError(false, 400, "Chi tiết danh mục không tìm thấy!"));
+        return BadRequest(error);
       }
-
-      var index = category.Specs.FindIndex(_ => _.ID == specId);
-      category.Specs.RemoveAt(index);
-
-      await spec.DeleteAsync();
-      await category.SaveAsync();
-
-      return StatusCode(204);
     }
   }
 }

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
 using _99phantram.Entities;
 using _99phantram.Helpers;
 using _99phantram.Interfaces;
 using _99phantram.Models;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Entities;
 
 namespace _99phantram.Controllers.Apps
 {
@@ -26,50 +26,30 @@ namespace _99phantram.Controllers.Apps
     [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<List<User>>> GetAllUsers()
     {
-      return await DB.Find<User>().Match(_ => true).Sort(u => u.CreatedOn, MongoDB.Entities.Order.Descending).Project(user => user.Exclude("password")).ExecuteAsync();
+      return await _userService.GetAllUsers(false);
     }
 
     [HttpGet("{id:length(24)}")]
     [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<User>> getUser(string id)
     {
-      var user = await DB.Find<User>().Match(user => user.ID == id).Project(user => user.Exclude("password")).ExecuteFirstAsync();
-
-      if (user != null)
+      try
       {
+        var user = await _userService.GetUser(id, false);
+
         return user;
       }
-
-      return NotFound(new HttpError(false, 404, "Không tìm thấy người dùng!"));
+      catch (HttpError error)
+      {
+        return NotFound(error);
+      }
     }
 
     [HttpPost]
     [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult> CreateUser(PostUserBody body)
     {
-      var role = await DB.Find<Role>().Match(role => role.ID.Equals(body.Role)).ExecuteFirstAsync();
-
-      if (role == null)
-      {
-        return BadRequest(new HttpError(false, 404, "Không tìm thấy vai trò!"));
-      }
-
-      Entities.User user = new Entities.User();
-
-      user.Email = body.Email;
-      user.Password = _authService.EncryptPassword(body.Password);
-      user.FirstName = body.FirstName;
-      user.LastName = body.LastName;
-      user.Sex = body.Sex;
-      user.Address = body.Address;
-      user.PhoneNumber = body.PhoneNumber;
-      user.Role = role;
-      user.Status = body.Status;
-      user.Oauth = false;
-      user.OauthProvider = OAuthProvider.None;
-      user.Avatar = body.Avatar;
- 
-      await user.SaveAsync();
+      await _userService.CreateUser(body);
 
       return StatusCode(201);
     }
@@ -78,52 +58,32 @@ namespace _99phantram.Controllers.Apps
     [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<User>> UpdateUser(PutUserBody body, string id)
     {
-      var user = await DB.Find<User>().Match(user => user.ID == id).ExecuteFirstAsync();
-
-      if (user == null)
+      try
       {
-        return NotFound(new HttpError(false, 404, "Không tìm thấy người dùng!"));
+        await _userService.UpdateUser(id, body);
+
+        return StatusCode(204);
       }
-
-      var role = await DB.Find<Role>().Match(role => role.ID.Equals(body.Role)).ExecuteFirstAsync();
-
-      if (role == null)
+      catch (HttpError error)
       {
-        return BadRequest(new HttpError(false, 404, "Không tìm thấy vai trò!"));
+        return NotFound(error);
       }
-
-      var newUser = await DB.UpdateAndGet<User>()
-        .MatchID(id)
-        .Modify(user => user.Email, body.Email)
-        .Modify(user => user.Password, string.IsNullOrEmpty(body.Password) ? user.Password : _authService.EncryptPassword(body.Password))
-        .Modify(user => user.FirstName, body.FirstName)
-        .Modify(user => user.LastName, body.LastName)
-        .Modify(user => user.Sex, body.Sex)
-        .Modify(user => user.Address, body.Address)
-        .Modify(user => user.PhoneNumber, body.PhoneNumber)
-        .Modify(user => user.Role, role)
-        .Modify(user => user.Status, body.Status)
-        .Modify(user => user.Avatar, body.Avatar)
-        .Project(user => user.Exclude("password"))
-        .ExecuteAsync();
-
-      return StatusCode(204);
     }
 
     [HttpDelete("{id:length(24)}")]
     [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult> DeleteUser(string id)
     {
-      var user = await DB.Find<User>().Match(user => user.ID == id).ExecuteFirstAsync();
-
-      if (user == null)
+      try
       {
-        return NotFound(new HttpError(false, 404, "Không tìm thấy người dùng!"));
+        await _userService.DeleteUser(id);
+
+        return StatusCode(204);
       }
-
-      await DB.DeleteAsync<User>(id);
-
-      return StatusCode(204);
+      catch (HttpError error)
+      {
+        return NotFound(error);
+      }
     }
   }
 }
