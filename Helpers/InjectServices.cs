@@ -21,6 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
       services.AddSingleton<IRoleService, RoleService>();
       services.AddSingleton<IUserService, UserService>();
       services.AddSingleton<ICategoryService, CategoryService>();
+      services.AddSingleton<ISpecService, SpecService>();
 
       return services;
     }
