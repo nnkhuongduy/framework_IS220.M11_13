@@ -55,5 +55,38 @@ namespace _99phantram.Controllers
         return StatusCode(500, new HttpError(false, 500, "Error in the uploading process!"));
       }
     }
+
+    [HttpPost("image")]
+    public async Task<ActionResult<GetFileResponse>> UploadImage(IFormFile image)
+    {
+      var ext = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+      if (string.IsNullOrEmpty(ext) || !_permittedExtensions.Contains(ext))
+        return BadRequest(new HttpError(false, 400, "File extension not valid!"));
+
+      if (image.Length >= 2097152)
+        return BadRequest(new HttpError(false, 400, "File size limit is 2MB"));
+
+      var timestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
+      var filename = $"{timestamp}-{Path.GetRandomFileName()}{ext}";
+
+      try
+      {
+        await _amazonS3.UploadFile(_amazonS3Options.ImagesBucket, filename, image.OpenReadStream());
+
+        var url = _amazonS3.GetFileUrl(_amazonS3Options.ImagesBucket, filename);
+
+        return new GetFileResponse
+        {
+          Url = url
+        };
+      }
+      catch (Exception exception)
+      {
+        Console.WriteLine(exception.Message);
+
+        return StatusCode(500, new HttpError(false, 500, "Error in the uploading process!"));
+      }
+    }
   }
 }

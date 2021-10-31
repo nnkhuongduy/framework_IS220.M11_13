@@ -16,10 +16,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
       services.AddSingleton<IAmazonS3Options, AmazonS3Options>();
       services.AddSingleton<IAmazonS3Context, AmazonS3Context>();
-      
+
       services.AddSingleton<IAuthService, AuthService>();
       services.AddSingleton<IRoleService, RoleService>();
       services.AddSingleton<IUserService, UserService>();
+      services.AddSingleton<ICategoryService, CategoryService>();
 
       return services;
     }

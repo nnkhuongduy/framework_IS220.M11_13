@@ -1,16 +1,16 @@
+using System;
+
 namespace _99phantram.Models
 {
-  public class HttpError
+  public class HttpError : Exception
   {
     public bool Success { get; set; }
     public int Code { get; set; }
-    public string Message { get; set; }
 
-    public HttpError(bool success, int code, string message)
+    public HttpError(bool success, int code, string message) : base(message)
     {
       Success = success;
       Code = code;
-      Message = message;
     }
   }
 }
