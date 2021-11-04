@@ -4,6 +4,7 @@ using _99phantram.Interfaces;
 using _99phantram.Models;
 using _99phantram.Services;
 using _99phantram.Options;
+using _99phantram.Helpers;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -22,6 +23,9 @@ namespace Microsoft.Extensions.DependencyInjection
       services.AddSingleton<IUserService, UserService>();
       services.AddSingleton<ICategoryService, CategoryService>();
       services.AddSingleton<ISpecService, SpecService>();
+
+      services.AddScoped<AppAuthorize>();
+      services.AddScoped<JwtHolder>();
 
       return services;
     }

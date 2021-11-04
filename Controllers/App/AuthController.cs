@@ -14,13 +14,13 @@ namespace _99phantram.Controllers.App
   public class AuthController : ControllerBase
   {
     private IUserService _userService;
-    private ILogger _logger;
+    private JwtHolder _jwtHolder;
     private IAuthService _authService;
 
-    public AuthController(IUserService userService, IAuthService authService, ILogger<AuthController> logger)
+    public AuthController(IUserService userService, IAuthService authService, JwtHolder jwtHolder)
     {
       _userService = userService;
-      _logger = logger;
+      _jwtHolder = jwtHolder;
       _authService = authService;
     }
 
@@ -46,10 +46,10 @@ namespace _99phantram.Controllers.App
     }
 
     [HttpGet]
-    [TypeFilter(typeof(AppAuthorize))]
+    [ServiceFilter(typeof(AppAuthorize))]
     public ActionResult<User> Authenticate()
     {
-      return (User)HttpContext.Items["User"];
+      return _jwtHolder.User;
     }
   }
 }

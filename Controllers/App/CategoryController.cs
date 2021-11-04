@@ -11,6 +11,7 @@ namespace _99phantram.Controllers.Apps
 {
   [Route("/api/app/categories")]
   [ApiController]
+  [ServiceFilter(typeof(AppAuthorize))]
   public class CategoryController : ControllerBase
   {
     private readonly ICategoryService _categoryService;
@@ -20,14 +21,12 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpGet]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<List<Category>>> GetAllCategories()
     {
       return await _categoryService.GetAllCategories();
     }
 
     [HttpGet("{id:length(24)}")]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<Category>> GetCategory(string id)
     {
       try
@@ -44,7 +43,6 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpPost]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult> CreateCategory(PostCategoryBody body)
     {
       await _categoryService.CreateCategory(body);
@@ -53,7 +51,6 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpPut("{id:length(24)}")]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<Category>> UpdateCategory(PutCategoryBody body, string id)
     {
       try
@@ -74,7 +71,6 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpDelete("{id:length(24)}")]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<Category>> DeleteCategory(string id)
     {
       try

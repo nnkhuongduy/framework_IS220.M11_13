@@ -10,6 +10,7 @@ namespace _99phantram.Controllers.Apps
 {
   [Route("/api/app/specs")]
   [ApiController]
+  [ServiceFilter(typeof(AppAuthorize))]
   public class SpecController : ControllerBase
   {
     private readonly ISpecService _specService;
@@ -20,7 +21,6 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpPost("{id:length(24)}")]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult> CreateSpec(SpecBody body, string id)
     {
       try
@@ -36,7 +36,6 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpPut("{categoryId:length(24)}/{specId:length(24)}")]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<Spec>> UpdateSpec(SpecBody body, string categoryId, string specId)
     {
       try
@@ -52,7 +51,6 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpDelete("{categoryId:length(24)}/{specId:length(24)}")]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<Spec>> DeleteSpec(string categoryId, string specId)
     {
       try

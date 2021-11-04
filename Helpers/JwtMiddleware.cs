@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using _99phantram.Interfaces;
+using _99phantram.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace _99phantram.Helpers
@@ -16,13 +17,13 @@ namespace _99phantram.Helpers
       _authService = authService;
     }
 
-    public async Task Invoke(HttpContext context)
+    public async Task Invoke(HttpContext context, JwtHolder jwtHolder)
     {
       var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
       if (token != null)
       {
-        context.Items["JwtToken"] = token;
+        jwtHolder.Token = token;
       }
 
       await _next(context);

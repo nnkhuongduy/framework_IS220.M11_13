@@ -11,6 +11,7 @@ namespace _99phantram.Controllers.Apps
 {
   [Route("/api/app/users")]
   [ApiController]
+  [ServiceFilter(typeof(AppAuthorize))]
   public class UserController : ControllerBase
   {
     private readonly IUserService _userService;
@@ -23,14 +24,12 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpGet]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<List<User>>> GetAllUsers()
     {
       return await _userService.GetAllUsers(false);
     }
 
     [HttpGet("{id:length(24)}")]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<User>> getUser(string id)
     {
       try
@@ -46,7 +45,6 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpPost]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult> CreateUser(PostUserBody body)
     {
       await _userService.CreateUser(body);
@@ -55,7 +53,6 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpPut("{id:length(24)}")]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult<User>> UpdateUser(PutUserBody body, string id)
     {
       try
@@ -71,7 +68,6 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpDelete("{id:length(24)}")]
-    [TypeFilter(typeof(AppAuthorize))]
     public async Task<ActionResult> DeleteUser(string id)
     {
       try
