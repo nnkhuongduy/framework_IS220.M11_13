@@ -60,16 +60,14 @@ namespace _99phantram.Services
 
     public async Task DeleteCategory(string id)
     {
-      var deletingCategory = await DB.Find<Category>().MatchID(id).ExecuteFirstAsync();
+      var category = await GetCategory(id);
 
-      if (deletingCategory == null)
+      if (category.Status != CategoryStatus.ARCHIVED)
       {
-        throw new HttpError(false, 404, "Danh mục không tìm thấy!");
+        throw new HttpError(false, 404, "Danh mục không thể xóa!");
       }
 
-      await deletingCategory.DeleteAsync();
-
-      return;
+      await category.DeleteAsync();
     }
 
     public async Task<Category> GetCategory(string id)
