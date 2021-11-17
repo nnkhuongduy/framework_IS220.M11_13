@@ -72,11 +72,6 @@ namespace _99phantram.Services
       return;
     }
 
-    public async Task<List<Category>> GetAllCategories()
-    {
-      return await DB.Find<Category>().Match(_ => true).Sort(_ => _.Name, MongoDB.Entities.Order.Ascending).ExecuteAsync();
-    }
-
     public async Task<Category> GetCategory(string id)
     {
       var result = await DB.Find<Category>().Match(_ => _.ID == id).ExecuteFirstAsync();

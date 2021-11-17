@@ -23,7 +23,7 @@ namespace _99phantram.Controllers.Apps
     [HttpGet]
     public async Task<ActionResult<List<Category>>> GetAllCategories()
     {
-      return await _categoryService.GetAllCategories();
+      return await DB.Find<Category>().Match(_ => true).ExecuteAsync();
     }
 
     [HttpGet("{id:length(24)}")]
