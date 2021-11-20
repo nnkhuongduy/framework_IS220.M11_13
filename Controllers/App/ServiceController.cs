@@ -56,7 +56,7 @@ namespace _99phantram.Controllers.Apps
       {
         var newService = await _serviceService.UpdateService(body, id);
 
-        if (newService.Status == ServiceStatus.ARCHIVED)
+        if (newService.Status == ServiceStatus.EXPIRED)
         {
           await _serviceService.ArchiveService(newService);
         }
