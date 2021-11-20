@@ -45,7 +45,7 @@ namespace _99phantram.Services
       return service;
     }
 
-    public async Task DeleteCategory(string id)
+    public async Task DeleteService(string id)
     {
       var service = await GetService(id);
 
