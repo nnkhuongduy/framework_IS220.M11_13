@@ -58,7 +58,7 @@ namespace _99phantram.Controllers.Apps
 
         if (newService.Status == ServiceStatus.EXPIRED)
         {
-          await _serviceService.ArchiveService(newService);
+          await _serviceService.ExpireService(newService);
         }
 
         return StatusCode(204);
