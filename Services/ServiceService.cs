@@ -22,9 +22,9 @@ namespace _99phantram.Services
       }).GetAwaiter().GetResult();
     }
 
-    public async Task ArchiveService(Service service)
+    public async Task ExpireService(Service service)
     {
-      service.Status = ServiceStatus.ARCHIVED;
+      service.Status = ServiceStatus.EXPIRED;
 
       await service.SaveAsync();
 
@@ -45,18 +45,16 @@ namespace _99phantram.Services
       return service;
     }
 
-    public async Task DeleteService(string id)
+    public async Task DeleteCategory(string id)
     {
-      var deletingService = await DB.Find<Service>().MatchID(id).ExecuteFirstAsync();
+      var service = await GetService(id);
 
-      if (deletingService == null)
+      if (service.Status != ServiceStatus.EXPIRED)
       {
-        throw new HttpError(false, 404, "Dịch vụ không tìm thấy!");
+        throw new HttpError(false, 404, "Dịch vụ không thể xóa!");
       }
 
-      await deletingService.DeleteAsync();
-
-      return;
+      await service.DeleteAsync();
     }
 
     public async Task<List<Service>> GetAllServices()
