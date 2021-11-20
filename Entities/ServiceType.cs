@@ -15,7 +15,7 @@ namespace _99phantram.Entities
     public string Name { get; set; }
     [Field("status")]
     public ServiceTypeStatus Status { get; set; }
-    [Field("value")]
-    public object Value { get; set; }
+    [BsonIgnore]
+    public Dictionary<string, object> Value { get; set; }
   }
 }
