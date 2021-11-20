@@ -28,7 +28,7 @@ namespace _99phantram.Services
 
       await service.SaveAsync();
 
-      return service;
+      return;
     }
 
     public async Task<Service> CreateService(ServicePostBody body)
@@ -37,8 +37,8 @@ namespace _99phantram.Services
 
       service.Name = body.Name;
       service.ServiceType = body.ServiceType;
-      category.Value = body.Value;
-      category.Status = body.Status;
+      service.Value = body.Value;
+      service.Status = body.Status;
 
       await service.SaveAsync();
 
@@ -81,7 +81,6 @@ namespace _99phantram.Services
       var newService = await DB.UpdateAndGet<Service>()
         .MatchID(id)
         .Modify(_ => _.Name, body.Name)
-        .Modify(_ => _.ServiceType, body.ServiceType)
         .Modify(_ => _.Value, body.Value)
         .Modify(_ => _.Status, body.Status)
         .ExecuteAsync();
