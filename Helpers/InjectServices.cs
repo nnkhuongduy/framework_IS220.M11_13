@@ -14,6 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
       services.AddTransient<IValidator<PostUserBody>, PostUserBodyValidator>();
       services.AddTransient<IValidator<PutUserBody>, PutUserBodyValidator>();
+      services.AddTransient<IValidator<PostServiceTypeBody>, ServiceTypeBodyValidator>(); 
 
       services.AddSingleton<IAmazonS3Options, AmazonS3Options>();
       services.AddSingleton<IAmazonS3Context, AmazonS3Context>();
@@ -23,6 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
       services.AddSingleton<IUserService, UserService>();
       services.AddSingleton<ICategoryService, CategoryService>();
       services.AddSingleton<ISpecService, SpecService>();
+      services.AddSingleton<IServiceTypeService, ServiceTypeService>();
 
       services.AddScoped<AppAuthorize>();
       services.AddScoped<JwtHolder>();
