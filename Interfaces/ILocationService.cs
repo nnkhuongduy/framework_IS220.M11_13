@@ -7,7 +7,7 @@ namespace _99phantram.Interfaces
 {
     public interface ILocationService
   {
-    Task<List<Location>> GetAllLocations();
+
     Task<Location> GetLocation(string id);
     Task<Location> CreateLocation(LocationBody body);
     Task<Location> UpdateLocation(LocationBody body, string id);

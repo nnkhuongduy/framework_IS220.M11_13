@@ -23,7 +23,7 @@ namespace _99phantram.Controllers.Apps
     [HttpGet]
     public async Task<ActionResult<List<Location>>> GetAllLocations()
     {
-      return await _locationService.GetAllLocations();
+      return await DB.Find<Location>().Match(_ => true).ExecuteAsync();
     }
 
     [HttpGet("{id:length(24)}")]
