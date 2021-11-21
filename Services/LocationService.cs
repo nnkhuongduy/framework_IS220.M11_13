@@ -22,6 +22,10 @@ namespace _99phantram.Services
       }).GetAwaiter().GetResult();
     }
 
+    public async Task<List<Location>> GetAllLocations()
+    {
+      return await DB.Find<Location>().Match(_ => true).Sort(_ => _.Name, MongoDB.Entities.Order.Ascending).ExecuteAsync();
+    }
     public async Task<Location> ArchiveLocation(Location location)
     {
       location.Status = LocationStatus.ARCHIVED;
