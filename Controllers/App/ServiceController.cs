@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
 using _99phantram.Entities;
 using _99phantram.Helpers;
 using _99phantram.Interfaces;
 using _99phantram.Models;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Entities;
 
 namespace _99phantram.Controllers.Apps
 {
@@ -23,7 +23,7 @@ namespace _99phantram.Controllers.Apps
     [HttpGet]
     public async Task<ActionResult<List<Service>>> GetAllServices()
     {
-      return await DB.Find<Service>().Match(_ => true).ExecuteAsync();
+      return await _serviceService.GetAllServices();
     }
 
     [HttpGet("{id:length(24)}")]
@@ -55,11 +55,6 @@ namespace _99phantram.Controllers.Apps
       try
       {
         var newService = await _serviceService.UpdateService(body, id);
-
-        if (newService.Status == ServiceStatus.EXPIRED)
-        {
-          await _serviceService.ExpireService(newService);
-        }
 
         return StatusCode(204);
       }
