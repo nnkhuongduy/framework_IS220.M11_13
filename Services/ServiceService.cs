@@ -1,17 +1,21 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MongoDB.Entities;
+using Newtonsoft.Json;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson;
+
 using _99phantram.Entities;
 using _99phantram.Interfaces;
 using _99phantram.Models;
-using MongoDB.Bson;
-using MongoDB.Entities;
 
 namespace _99phantram.Services
 {
   public class ServiceService : IServiceService
   {
-    public ServiceService()
+    private readonly IServiceTypeService _serviceTypeService;
+  
+    public ServiceService(IServiceTypeService serviceTypeService)
     {
       Task.Run(async () =>
       {
@@ -20,6 +24,8 @@ namespace _99phantram.Services
           .Option(option => option.Unique = true)
           .CreateAsync();
       }).GetAwaiter().GetResult();
+
+      _serviceTypeService = serviceTypeService;
     }
 
     public async Task ExpireService(Service service)
@@ -33,11 +39,20 @@ namespace _99phantram.Services
 
     public async Task<Service> CreateService(ServicePostBody body)
     {
+      var serviceType = await DB.Find<ServiceType>().MatchID(body.ServiceType).ExecuteFirstAsync();
+
+      if (serviceType == null)
+      {
+        throw new HttpError(false, 404, "Không tìm thấy kiểu dịch vụ!");
+      }
+
       Service service = new Service();
 
+      var jsonDoc = JsonConvert.SerializeObject(body.Value);
+
+      service.ServiceTypeRef = serviceType.ToReference();
       service.Name = body.Name;
-      service.ServiceType = body.ServiceType;
-      service.Value = body.Value;
+      service.ValueBson = BsonSerializer.Deserialize<BsonDocument>(jsonDoc);
       service.Status = body.Status;
 
       await service.SaveAsync();
@@ -59,31 +74,47 @@ namespace _99phantram.Services
 
     public async Task<List<Service>> GetAllServices()
     {
-      return await DB.Find<Service>().Match(_ => true).Sort(_ => _.Name, MongoDB.Entities.Order.Ascending).ExecuteAsync();
+      var services = await DB.Find<Service>().Match(_ => true).Sort(_ => _.CreatedOn, MongoDB.Entities.Order.Descending).ExecuteAsync();
+
+      foreach (var service in services)
+      {
+        var bsonDoc = BsonExtensionMethods.ToJson(service.ValueBson);
+        service.Value = JsonConvert.DeserializeObject<Dictionary<string, object>>(bsonDoc);
+        service.ServiceType = await _serviceTypeService.GetServiceType(service.ServiceTypeRef.ID);
+      }
+
+      return services;
     }
 
     public async Task<Service> GetService(string id)
     {
-      var result = await DB.Find<Service>().Match(_ => _.ID == id).ExecuteFirstAsync();
+      var service = await DB.Find<Service>().MatchID(id).ExecuteFirstAsync();
 
-      if (result == null)
+      if (service == null)
       {
-        throw new HttpError(false, 404, "Không tìm thấy dịch vụ");
+        throw new HttpError(false, 404, "Không tìm thấy dịch vụ!");
       }
 
-      return result;
+      var bsonDoc = BsonExtensionMethods.ToJson(service.ValueBson);
+      service.Value = JsonConvert.DeserializeObject<Dictionary<string, object>>(bsonDoc);
+      service.ServiceType = await _serviceTypeService.GetServiceType(service.ServiceTypeRef.ID);
+
+      return service;
     }
 
     public async Task<Service> UpdateService(ServicePutBody body, string id)
     {
-      var newService = await DB.UpdateAndGet<Service>()
-        .MatchID(id)
-        .Modify(_ => _.Name, body.Name)
-        .Modify(_ => _.Value, body.Value)
-        .Modify(_ => _.Status, body.Status)
-        .ExecuteAsync();
+      var service = await GetService(id);
 
-      return newService;
+      var jsonDoc = JsonConvert.SerializeObject(body.Value);
+
+      service.ValueBson = BsonSerializer.Deserialize<BsonDocument>(jsonDoc);
+      service.Name = body.Name;
+      service.Status = body.Status;
+
+      await service.SaveAsync();
+
+      return service;
     }
   }
-} 
+}
