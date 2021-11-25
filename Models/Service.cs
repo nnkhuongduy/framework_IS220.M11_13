@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
-using _99phantram.Entities;
 using FluentValidation;
+
+using _99phantram.Entities;
 
 namespace _99phantram.Models
 {
