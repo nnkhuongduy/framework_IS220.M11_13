@@ -1,11 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MongoDB.Entities;
+using MongoDB.Bson;
+
 using _99phantram.Entities;
 using _99phantram.Interfaces;
 using _99phantram.Models;
-using MongoDB.Bson;
-using MongoDB.Entities;
 
 namespace _99phantram.Services
 {
@@ -22,12 +22,31 @@ namespace _99phantram.Services
       }).GetAwaiter().GetResult();
     }
 
+    private async Task _RemoveFromParents(Location location)
+    {
+      var parentLocations = await DB.Find<Location>().Match(_ => _.SubLocationsRef.Contains(ObjectId.Parse(location.ID))).ExecuteAsync();
+
+      foreach (var _ in parentLocations)
+      {
+        _.SubLocationsRef.Remove(ObjectId.Parse(location.ID));
+        await _.SaveAsync();
+      }
+    }
 
     public async Task<Location> ArchiveLocation(Location location)
     {
+      var supplies = await DB.Find<Supply>().Match(_ => _.ElemMatch(__ => __.Locations, __ => __.ID == location.ID)).ExecuteAsync();
+
+      if (supplies.Count > 0)
+        throw new HttpError(false, 400, "Không thể lưu trữ địa điểm vẫn còn sản phẩm đang sử dụng!");
+
       location.Status = LocationStatus.ARCHIVED;
+      location.SubLocations.Clear();
+
+      await _RemoveFromParents(location);
 
       await location.SaveAsync();
+
       return location;
     }
 
@@ -38,8 +57,7 @@ namespace _99phantram.Services
       location.Name = body.Name;
       location.LocationLevel = body.LocationLevel;
       location.Status = body.Status;
-      location.SubLocations = new List<Location>();
-      location.SubLocationRef = new List<ObjectId>();
+      location.SubLocationsRef = new List<ObjectId>();
 
       await location.SaveAsync();
 
@@ -47,52 +65,73 @@ namespace _99phantram.Services
     }
 
     public async Task DeleteLocation(string id)
-        {
-            var deletingLocation = await DB.Find<Location>().MatchID(id).ExecuteFirstAsync();     
+    {
+      var deletingLocation = await GetLocation(id);
 
-            if (deletingLocation.Status == LocationStatus.ARCHIVED)
-            {
-                await deletingLocation.DeleteAsync();   
-            }
-            else 
-                throw new HttpError(false, 404, "Danh mục không tìm thấy!");
-            return;
-        }
+      if (deletingLocation.Status != LocationStatus.ARCHIVED)
+        throw new HttpError(false, 400, "Không thể xóa địa điểm chưa được lưu trữ!");
 
-        public async Task<Location> GetLocation(string id)
+      await deletingLocation.DeleteAsync();
+    }
+
+    public async Task<Location> GetLocation(string id)
     {
       var result = await DB.Find<Location>().Match(_ => _.ID == id).ExecuteFirstAsync();
 
       if (result == null)
       {
-        throw new HttpError(false, 404, "Không tìm thấy danh mục sản phẩm");
+        throw new HttpError(false, 404, "Không tìm thấy địa điểm");
       }
 
       return result;
     }
 
-    public async Task<Location> UpdateLocation(LocationBody body, string id)
+    public async Task<Location> UpdateLocation(string id, LocationBody body)
     {
+      var location = await GetLocation(id);
       List<ObjectId> subLocations;
 
-      try
+      var supplies = await DB.Find<Supply>().Match(_ => _.ElemMatch(__ => __.Locations, __ => __.ID == id)).ExecuteAsync();
+
+      if (body.Status == LocationStatus.ARCHIVED)
       {
-        subLocations = await DB.Find<Location, ObjectId>().Match(_ => _.In(_ => _.ID, body.SubLocations)).Project(_ => ObjectId.Parse(_.ID)).ExecuteAsync();
+        location = await ArchiveLocation(location);
       }
-      catch (Exception)
+
+      if (location.LocationLevel != body.LocationLevel)
       {
-        throw new HttpError(false, 400, "Không tìm thấy danh mục con");
-      }  
+        if (supplies.Count > 0)
+          throw new HttpError(false, 400, "Không thể thay đổi cấp địa điểm khi vẫn còn sản phẩm đang sử dụng!");
 
-      var newLocation = await DB.UpdateAndGet<Location>()
-        .MatchID(id)
-        .Modify(_ => _.Name, body.Name)
-        .Modify(_ => _.LocationLevel, body.LocationLevel)
-        .Modify(_ => _.Status, body.Status)
-        .Modify(_ => _.SubLocationRef, subLocations)
-        .ExecuteAsync();
+        await _RemoveFromParents(location);
+        subLocations = new List<ObjectId>();
+      }
+      else
+      {
+        if (body.SubLocations != null)
+          subLocations = await DB.Find<Location, ObjectId>().Match(_ => _.In("_id", body.SubLocations)).Project(_ => ObjectId.Parse(_.ID)).ExecuteAsync();
+        else subLocations = location.SubLocationsRef;
+      }
 
-      return newLocation;
+      location.Name = body.Name;
+      location.LocationLevel = body.LocationLevel;
+      location.Status = body.Status;
+      location.SubLocationsRef = subLocations;
+
+      await location.SaveAsync();
+
+      foreach (var supply in supplies)
+      {
+        var supplyLocation = supply.Locations.Find(_ => _.ID == id);
+
+        supplyLocation.Name = body.Name;
+        supplyLocation.LocationLevel = body.LocationLevel;
+        supplyLocation.Status = body.Status;
+
+        await supply.SaveAsync();
+      }
+
+      return location;
     }
   }
 }

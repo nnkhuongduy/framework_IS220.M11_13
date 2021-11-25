@@ -23,15 +23,13 @@ namespace _99phantram.Entities
     [Field("name")]
     public string Name { get; set; }
     [Field("location_level")]
-    public LocationLevel Locationlevel { get; set; }
-    public LocationLevel LocationLevel { get; internal set; }
+    public LocationLevel LocationLevel { get; set; }
     [Field("status")]
     [BsonDefaultValue(0)]
     public LocationStatus Status { get; set; }
     [BsonIgnore]
     public List<Location> SubLocations { get; set; }
     [Field("sub_locations")]
-
-    public List<ObjectId> SubLocationRef {get; set;}
+    public List<ObjectId> SubLocationsRef { get; set; }
   }
 }
