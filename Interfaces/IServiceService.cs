@@ -12,7 +12,7 @@ namespace _99phantram.Interfaces
     Task<Service> GetService(string id);
     Task<Service> CreateService(ServicePostBody body);
     Task<Service> UpdateService(ServicePutBody body, string id);
-    Task ExpireService(Service service);
+    Task<Service> ExpireService(Service service);
     Task DeleteService(string id);
   }
 } 
