@@ -14,7 +14,7 @@ namespace _99phantram.Services
   public class ServiceService : IServiceService
   {
     private readonly IServiceTypeService _serviceTypeService;
-  
+
     public ServiceService(IServiceTypeService serviceTypeService)
     {
       Task.Run(async () =>
@@ -28,13 +28,13 @@ namespace _99phantram.Services
       _serviceTypeService = serviceTypeService;
     }
 
-    public async Task ExpireService(Service service)
+    public async Task<Service> ExpireService(Service service)
     {
       service.Status = ServiceStatus.EXPIRED;
 
       await service.SaveAsync();
 
-      return;
+      return service;
     }
 
     public async Task<Service> CreateService(ServicePostBody body)
@@ -111,6 +111,9 @@ namespace _99phantram.Services
       service.ValueBson = BsonSerializer.Deserialize<BsonDocument>(jsonDoc);
       service.Name = body.Name;
       service.Status = body.Status;
+
+      if (body.Status == ServiceStatus.EXPIRED)
+        service = await ExpireService(service);
 
       await service.SaveAsync();
 
