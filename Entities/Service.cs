@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -18,17 +18,20 @@ namespace _99phantram.Entities
     {
         [BsonIgnore]
         public ServiceType ServiceType { get; set; }
-        
+
+        [Field("service_type")]
+        public One<ServiceType> ServiceTypeRef { get; set; }
+
         [Field("name")]
         public string Name { get; set; }
-        
+
         [BsonIgnore]
         public Dictionary<string, object> Value { get; set; }
         
         [JsonIgnore]
         [Field("value")]
         public BsonDocument ValueBson { get; set; }
-        
+
         [Field("status")]
         [BsonDefaultValue(0)]
         public ServiceStatus Status { get; set; }
@@ -38,8 +41,5 @@ namespace _99phantram.Entities
         
         [Field("modified_on")]
         public DateTime ModifiedOn { get; set; }
-        
-        [Field("service_type")]
-        public One<ServiceType> ServiceTypeRef { get; set; }
     }
 }
