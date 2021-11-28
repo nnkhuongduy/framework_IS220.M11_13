@@ -1,16 +1,19 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MongoDB.Entities;
+using Newtonsoft.Json;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson;
 
 using _99phantram.Entities;
 using _99phantram.Interfaces;
 using _99phantram.Models;
-using MongoDB.Entities;
 
 namespace _99phantram.Services
 {
   public class ServiceTypeService : IServiceTypeService
   {
-     public ServiceTypeService()
+    public ServiceTypeService()
     {
       Task.Run(async () =>
       {
@@ -20,83 +23,102 @@ namespace _99phantram.Services
           .CreateAsync();
       }).GetAwaiter().GetResult();
     }
-    // Get all service type
-     public async Task<List<ServiceType>> GetAllService()
-    {
-      return await DB.Find<ServiceType>().Match(_ => true).Sort(_ => _.Name, MongoDB.Entities.Order.Ascending).ExecuteAsync();
-    }
 
+    // Get all service type
+    public async Task<List<ServiceType>> GetAllServiceTypes()
+    {
+      var serviceTypes = await DB
+        .Find<ServiceType>()
+        .Match(_ => true)
+        .Sort(_ => _.ID, MongoDB.Entities.Order.Descending)
+        .ExecuteAsync();
+
+      foreach (var serviceType in serviceTypes)
+      {
+        var bsonDoc = BsonExtensionMethods.ToJson(serviceType.ValueBson);
+        serviceType.Value = JsonConvert.DeserializeObject<Dictionary<string, object>>(bsonDoc);
+      }
+
+      return serviceTypes;
+    }
 
     //Get service type
     public async Task<ServiceType> GetServiceType(string id)
     {
-      var result = await DB.Find<ServiceType>().Match(_ => _.ID == id).ExecuteFirstAsync();
+      var serviceType = await DB.Find<ServiceType>().MatchID(id).ExecuteFirstAsync();
 
-      if (result == null)
+      if (serviceType == null)
       {
-        throw new HttpError(false, 404, "Không tìm thấy loại dịch vụ nào!");
+        throw new HttpError(false, 404, "Không tìm thấy kiểu dịch vụ!");
       }
-      return result;
+
+      var bsonDoc = BsonExtensionMethods.ToJson(serviceType.ValueBson);
+      serviceType.Value = JsonConvert.DeserializeObject<Dictionary<string, object>>(bsonDoc);
+
+      return serviceType;
     }
 
     //Create service type
     public async Task<ServiceType> CreateServiceType(ServiceTypeBody body)
     {
-      ServiceType servicetype = new ServiceType();
+      ServiceType serviceType = new ServiceType();
 
-      servicetype.Name = body.Name;
-      servicetype.Status = body.Status;
-      servicetype.Value = new Dictionary<string, object>();
-      servicetype.ValueBson = body.Value;
+      var jsonDoc = JsonConvert.SerializeObject(body.Value);
 
-      await servicetype.SaveAsync();
-
-      return servicetype;
-    }
-
-    //Update service
-     public async Task<ServiceType> UpdateServiceType(string id, ServiceTypeBody body)
-     
-    {
-      var updateServiceType = await DB.Find<ServiceType>().MatchID(id).ExecuteFirstAsync();
-
-      if (updateServiceType == null)
-      {
-        throw new HttpError(false, 404, "Không tìm thấy dịch vụ!");
-      }
-      var newServiceType = await DB.UpdateAndGet<ServiceType>()
-        .MatchID(id)
-        .Modify(_ => _.Name, body.Name)
-        .Modify(_ => _.Status, body.Status)
-        .Modify(_ => _.Value, new Dictionary<string, object>())
-        .Modify(_ => _.ValueBson, body.Value)
-        .ExecuteAsync();
-
-      return newServiceType;
-    }
-
-    //Deactive Service
-      public async Task DeactivateServiceType(ServiceType serviceType)
-    {
-      serviceType.Status = ServiceTypeStatus.DEACTIVE;
+      serviceType.Name = body.Name;
+      serviceType.Status = body.Status;
+      serviceType.ValueBson = BsonSerializer.Deserialize<BsonDocument>(jsonDoc);
 
       await serviceType.SaveAsync();
 
-      return;
+      return serviceType;
+    }
+
+    //Update service
+    public async Task<ServiceType> UpdateServiceType(string id, ServiceTypeBody body)
+
+    {
+      var serviceType = await GetServiceType(id);
+
+      var jsonDoc = JsonConvert.SerializeObject(body.Value);
+
+      serviceType.Name = body.Name;
+      serviceType.Status = body.Status;
+      serviceType.ValueBson = BsonSerializer.Deserialize<BsonDocument>(jsonDoc);
+
+      await serviceType.SaveAsync();
+
+      return serviceType;
+    }
+
+    //Deactive Service
+    public async Task DeactivateServiceType(ServiceType serviceType)
+    {
+      var services = await DB.Find<Service>().Match(_ => _.ServiceTypeRef.ID == serviceType.ID && _.Status == ServiceStatus.ACTIVE).ExecuteAsync();
+
+      if (services.Count > 0)
+      {
+        throw new HttpError(false, 400, "Vẫn còn dịch vụ hoạt động sử dụng loại dịch vụ này!");
+      }
+
+      serviceType.Status = ServiceTypeStatus.DEACTIVE;
+
+      await serviceType.SaveAsync();
     }
 
     //Delete Service
-     public async Task DeleteServiceType(string id)
-      {
-            var deletingServiceType = await DB.Find<ServiceType>().MatchID(id).ExecuteFirstAsync();     
+    public async Task DeleteServiceType(string id)
+    {
+      var serviceType = await GetServiceType(id);
 
-            if (deletingServiceType.Status == ServiceTypeStatus.DEACTIVE)
-            {
-                await deletingServiceType.DeleteAsync();   
-            }
-            else 
-                throw new HttpError(false, 404, "không tìm thấy dịch vụ!");
-            return;
-        }
+      if (serviceType.Status != ServiceTypeStatus.DEACTIVE)
+      {
+        throw new HttpError(false, 400, "Không thể xóa dịch vụ chưa được lưu trữ!");
+      }
+
+      await DB.DeleteAsync<Service>(_ => _.ServiceTypeRef.ID == id);
+
+      await serviceType.DeleteAsync();
+    }
   }
 }

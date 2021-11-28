@@ -1,29 +1,29 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
 using _99phantram.Entities;
 using _99phantram.Helpers;
 using _99phantram.Interfaces;
 using _99phantram.Models;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Entities;
 
-namespace _99phantram.Controllers.Apps
+namespace _99phantram.Controllers
 {
   [Route("/api/app/service-types")]
   [ApiController]
   [ServiceFilter(typeof(AppAuthorize))]
   public class ServiceTypeController : ControllerBase
   {
-    private readonly IServiceTypeService _servicetypeService;
+    private readonly IServiceTypeService _serviceTypeService;
     public ServiceTypeController(IServiceTypeService servicetypeService)
     {
-      _servicetypeService = servicetypeService;
+      _serviceTypeService = servicetypeService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ServiceType>>> GetAllServiceType()
+    public async Task<ActionResult<List<ServiceType>>> GetAllServiceTypes()
     {
-      return await _servicetypeService.GetAllService();
+      return await _serviceTypeService.GetAllServiceTypes();
     }
 
     [HttpGet("{id:length(24)}")]
@@ -31,57 +31,54 @@ namespace _99phantram.Controllers.Apps
     {
       try
       {
-        var servicetype = await _servicetypeService.GetServiceType(id);
-
-        return servicetype;
+        return await _serviceTypeService.GetServiceType(id);
       }
       catch (HttpError error)
       {
-
-        return NotFound(error);
+        return StatusCode(error.Code, error);
       }
     }
 
     [HttpPost]
     public async Task<ActionResult> CreateServiceType(ServiceTypeBody body)
     {
-      await _servicetypeService.CreateServiceType(body);
+      await _serviceTypeService.CreateServiceType(body);
 
       return StatusCode(201);
     }
 
     [HttpPut("{id:length(24)}")]
-    public async Task<ActionResult<ServiceType>> UpdateServiceType(ServiceTypeBody body, string id)
+    public async Task<ActionResult> UpdateServiceType(string id, ServiceTypeBody body)
     {
       try
       {
-        var newServiceType = await _servicetypeService.UpdateServiceType(body, id);
+        var serviceType = await _serviceTypeService.UpdateServiceType(id, body);
 
-        if (newServiceType.Status == ServiceTypeStatus.DEACTIVE)
+        if (body.Status == ServiceTypeStatus.DEACTIVE)
         {
-          await _servicetypeService.ArchiveServiceType(newServiceType);
+          await _serviceTypeService.DeactivateServiceType(serviceType);
         }
 
         return StatusCode(204);
       }
       catch (HttpError error)
       {
-        return NotFound(error);
+        return StatusCode(error.Code, error);
       }
     }
 
     [HttpDelete("{id:length(24)}")]
-    public async Task<ActionResult<ServiceType>> DeleteServiceType(string id)
+    public async Task<ActionResult> DeleteServiceType(string id)
     {
       try
       {
-        await _servicetypeService.DeleteServiceType(id);
+        await _serviceTypeService.DeleteServiceType(id);
 
         return StatusCode(204);
       }
       catch (HttpError error)
       {
-        return NotFound(error);
+        return StatusCode(error.Code, error);
       }
     }
   }
