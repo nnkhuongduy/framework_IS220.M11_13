@@ -17,6 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
       services.AddTransient<IValidator<SpecBody>, SpecBodyValidator>();
       services.AddTransient<IValidator<PostCategoryBody>, PostCategoryBodyValidator>();
       services.AddTransient<IValidator<PutCategoryBody>, PutCategoryBodyValidator>();
+      services.AddTransient<IValidator<ServiceTypeBody>, ServiceTypeBodyValidator>();
       services.AddTransient<IValidator<ServicePostBody>, ServicePostBodyValidator>();
       services.AddTransient<IValidator<ServicePutBody>, ServicePutBodyValidator>();
 
@@ -29,6 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection
       services.AddSingleton<ICategoryService, CategoryService>();
       services.AddSingleton<ISpecService, SpecService>();
       services.AddSingleton<IServiceService, ServiceService>();
+      services.AddSingleton<IServiceTypeService, ServiceTypeService>();
 
       services.AddScoped<AppAuthorize>();
       services.AddScoped<JwtHolder>();
