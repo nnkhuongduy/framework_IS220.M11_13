@@ -32,6 +32,7 @@ namespace _99phantram
         options.AddPolicy(name: AllowSpecificOrigins, builder =>
         {
           builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowCredentials().AllowAnyHeader();
+          builder.WithOrigins("http://localhost:3001").AllowAnyMethod().AllowCredentials().AllowAnyHeader();
           builder.WithOrigins("https://*.99phantram.com").SetIsOriginAllowedToAllowWildcardSubdomains().AllowAnyMethod().AllowCredentials().AllowAnyHeader();
         });
       });
