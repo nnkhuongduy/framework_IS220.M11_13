@@ -14,5 +14,6 @@ namespace _99phantram.Interfaces
     Task<User> UpdateUser(string id, PutUserBody body);
     Task<User> ArchiveUser(User user);
     Task DeleteUser(string id);
+    Task<User> StepTwoUpdate(User user, StepTwoUpdateRequest request);
   }
 }
