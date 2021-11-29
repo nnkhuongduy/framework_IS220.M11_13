@@ -14,6 +14,9 @@ namespace Microsoft.Extensions.DependencyInjection
     {
       services.AddTransient<IValidator<PostUserBody>, PostUserBodyValidator>();
       services.AddTransient<IValidator<PutUserBody>, PutUserBodyValidator>();
+      services.AddTransient<IValidator<SpecBody>, SpecBodyValidator>();
+      services.AddTransient<IValidator<PostCategoryBody>, PostCategoryBodyValidator>();
+      services.AddTransient<IValidator<PutCategoryBody>, PutCategoryBodyValidator>();
       services.AddTransient<IValidator<PostServiceTypeBody>, ServiceTypeBodyValidator>(); 
 
       services.AddSingleton<IAmazonS3Options, AmazonS3Options>();

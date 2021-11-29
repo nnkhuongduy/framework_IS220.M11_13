@@ -37,7 +37,6 @@ namespace _99phantram.Models
       RuleFor(r => r.Name).NotEmpty();
       RuleFor(r => r.CategoryLevel).IsInEnum();
       RuleFor(r => r.Status).IsInEnum();
-      RuleFor(r => r.SubCategories).NotEmpty();
     }
   }
 }

@@ -7,7 +7,6 @@ namespace _99phantram.Interfaces
 {
   public interface ICategoryService
   {
-    Task<List<Category>> GetAllCategories();
     Task<Category> GetCategory(string id);
     Task<Category> CreateCategory(PostCategoryBody body);
     Task<Category> UpdateCategory(PutCategoryBody body, string id);
