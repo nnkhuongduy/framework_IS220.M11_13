@@ -76,7 +76,6 @@ namespace _99phantram.Services
 
     //Update service
     public async Task<ServiceType> UpdateServiceType(string id, ServiceTypeBody body)
-
     {
       var serviceType = await GetServiceType(id);
 

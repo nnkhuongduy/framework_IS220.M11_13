@@ -5,7 +5,7 @@ using _99phantram.Models;
 
 namespace _99phantram.Interfaces
 {
-    public interface ILocationService
+  public interface ILocationService
   {
     Task<Location> GetLocation(string id);
     Task<Location> CreateLocation(LocationBody body);

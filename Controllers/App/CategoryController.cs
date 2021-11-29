@@ -56,11 +56,6 @@ namespace _99phantram.Controllers.Apps
       {
         var newCategory = await _categoryService.UpdateCategory(body, id);
 
-        if (newCategory.Status == CategoryStatus.ARCHIVED)
-        {
-          await _categoryService.ArchiveCategory(newCategory);
-        }
-
         return StatusCode(204);
       }
       catch (HttpError error)

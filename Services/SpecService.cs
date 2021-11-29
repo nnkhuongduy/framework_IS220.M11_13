@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
 using MongoDB.Entities;
+using System.Linq;
+using MongoDB.Bson;
 
 using _99phantram.Entities;
 using _99phantram.Interfaces;
 using _99phantram.Models;
-using System.Linq;
 
 namespace _99phantram.Services
 {
@@ -31,6 +32,21 @@ namespace _99phantram.Services
 
       await category.SaveAsync();
 
+      var supplies = await DB.Find<Supply>().Match(_ => _.ElemMatch(__ => __.Categories, __ => __.ID.Equals(ObjectId.Parse(categoryId)))).ExecuteAsync();
+
+      foreach (var supply in supplies)
+      {
+        Spec supplySpec = new Spec();
+        supplySpec.Name = body.Name;
+        supplySpec.Value = "";
+        supplySpec.Required = body.Required;
+        supplySpec.Parent = ObjectId.Parse(spec.ID);
+
+        supply.Specs.Add(supplySpec);
+
+        await supply.SaveAsync();
+      }
+
       return spec;
     }
 
@@ -45,7 +61,20 @@ namespace _99phantram.Services
         throw new HttpError(false, 400, "Chi tiết danh mục không tìm thấy!");
       }
 
+      var supplies = await DB.Find<Supply>().Match(_ => _.ElemMatch(__ => __.Specs, __ => __.Parent.Equals(ObjectId.Parse(specId)))).ExecuteAsync();
+
       var newSpec = await DB.UpdateAndGet<Spec>().MatchID(spec.ID).Modify(_ => _.Name, body.Name).Modify(_ => _.Required, body.Required).ExecuteAsync();
+
+      foreach (var supply in supplies)
+      {
+        var supplySpec = supply.Specs.Find(_ => _.Parent.Equals(ObjectId.Parse(specId)));
+
+        supplySpec.Name = body.Name;
+        supplySpec.Required = body.Required;
+
+        await supply.SaveAsync();
+      }
+
       var index = category.Specs.FindIndex(_ => _.ID == specId);
 
       category.Specs[index] = newSpec;
@@ -68,6 +97,17 @@ namespace _99phantram.Services
 
       var index = category.Specs.FindIndex(_ => _.ID == specId);
       category.Specs.RemoveAt(index);
+
+      var supplies = await DB.Find<Supply>().Match(_ => _.ElemMatch(__ => __.Specs, __ => __.Parent.Equals(ObjectId.Parse(specId)))).ExecuteAsync();
+
+      foreach (var supply in supplies)
+      {
+        var specIndex = supply.Specs.FindIndex(_ => _.Parent.Equals(ObjectId.Parse(specId)));
+
+        supply.Specs.RemoveAt(specIndex);
+
+        await supply.SaveAsync();
+      }
 
       await spec.DeleteAsync();
       await category.SaveAsync();

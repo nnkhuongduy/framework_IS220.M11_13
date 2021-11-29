@@ -7,7 +7,7 @@ using _99phantram.Helpers;
 using _99phantram.Interfaces;
 using _99phantram.Models;
 
-namespace _99phantram.Controllers.Apps
+namespace _99phantram.Controllers
 {
   [Route("/api/app/services")]
   [ApiController]
@@ -15,6 +15,7 @@ namespace _99phantram.Controllers.Apps
   public class ServiceController : ControllerBase
   {
     private readonly IServiceService _serviceService;
+
     public ServiceController(IServiceService serviceService)
     {
       _serviceService = serviceService;
@@ -65,7 +66,7 @@ namespace _99phantram.Controllers.Apps
     }
 
     [HttpDelete("{id:length(24)}")]
-    public async Task<ActionResult<Service>> DeleteService(string id)
+    public async Task<ActionResult> DeleteService(string id)
     {
       try
       {

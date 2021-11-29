@@ -108,8 +108,8 @@ namespace _99phantram.Services
       }
       else
       {
-        if (body.SubLocations != null)
-          subLocations = await DB.Find<Location, ObjectId>().Match(_ => _.In("_id", body.SubLocations)).Project(_ => ObjectId.Parse(_.ID)).ExecuteAsync();
+        if (body.SubLocations != null) 
+          subLocations = await DB.Find<Location, ObjectId>().Match(_ => _.In(__ => __.ID, body.SubLocations)).Project(_ => ObjectId.Parse(_.ID)).ExecuteAsync();
         else subLocations = location.SubLocationsRef;
       }
 

@@ -33,5 +33,7 @@ namespace _99phantram.Entities
     public List<Spec> Specs { get; set; }
     [Field("sub_categories")]
     public List<ObjectId> SubCategories { get; set; }
+    [Field("slug")]
+    public string Slug {get; set;}
   }
 }
