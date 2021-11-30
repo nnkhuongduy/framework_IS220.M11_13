@@ -1,4 +1,5 @@
 using _99phantram.Entities;
+
 using FluentValidation;
 
 namespace _99phantram.Models
@@ -61,7 +62,8 @@ namespace _99phantram.Models
     }
   }
 
-  public class UserResponse {
+  public class UserResponse
+  {
     public MongoDB.Bson.ObjectId id { get; set; }
     public string email { get; set; }
     public string first_name { get; set; }
@@ -75,5 +77,44 @@ namespace _99phantram.Models
     public Role role { get; set; }
     public UserStatus status { get; set; }
     public System.DateTime created_at { get; set; }
+  }
+
+  public class UserRegistrationBody
+  {
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public string Password { get; set; }
+  }
+
+  public class UserRegistrationBodyValidator : AbstractValidator<UserRegistrationBody>
+  {
+    public UserRegistrationBodyValidator()
+    {
+      RuleFor(_ => _.FirstName).NotEmpty();
+      RuleFor(_ => _.LastName).NotEmpty();
+      RuleFor(r => r.Email).NotEmpty().EmailAddress();
+      RuleFor(r => r.Password).MinimumLength(7);
+    }
+  }
+
+  public class UserMiniResponse
+  {
+    public string ID { get; set; }
+
+    public string FirstName { get; set; }
+
+    public string LastName { get; set; }
+
+    public string Avatar { get; set; }
+  }
+
+  public class UserSnapshot
+  {
+    public string ID { get; set; }
+    public string Email { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Avatar { get; set; }
   }
 }
