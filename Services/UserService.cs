@@ -123,5 +123,18 @@ namespace _99phantram.Services
 
       return;
     }
+
+    public async Task<User> StepTwoUpdate(User user, StepTwoUpdateRequest request)
+    {
+      user.PhoneNumber = request.PhoneNumber;
+      user.LocationProvinceRef = request.Province;
+      user.LocationWardRef = request.Ward;
+      user.LocationBlockRef = request.Block;
+      user.Address = request.Address;
+
+      await user.SaveExceptAsync(_ => new { _.Password });
+
+      return user;
+    }
   }
 }
