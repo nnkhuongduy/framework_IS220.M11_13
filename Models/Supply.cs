@@ -53,4 +53,29 @@ namespace _99phantram.Models
   {
     public int Page { get; set; }
   }
+
+  public class PutSupply
+  {
+    public SupplyStatus Status { get; set; }
+    public bool SendEmail { get; set; }
+    public string Reason { get; set; }
+  }
+
+  public class PutSupplyValidator : AbstractValidator<PutSupply>
+  {
+    public PutSupplyValidator()
+    {
+      RuleFor(_ => _.Status).IsInEnum();
+      RuleFor(_ => _.SendEmail).NotEmpty();
+    }
+  }
+
+  public class SupplySnapshot
+  {
+    public string ID { get; set; }
+    public string Name { get; set; }
+    public long Price { get; set; }
+    public string Thumbnail { get; set; }
+    public List<LocationSnapshot> Locations { get; set; }
+  }
 }
