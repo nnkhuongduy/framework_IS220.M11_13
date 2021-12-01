@@ -10,6 +10,13 @@ namespace _99phantram.Services
 {
   public class SupplyService : ISupplyService
   {
+    private readonly IMailService _mailService;
+
+    public SupplyService(IMailService mailService)
+    {
+      _mailService = mailService;
+    }
+
     public async Task<Supply> CreateSupply(User owner, ClientPostSupply body)
     {
       var specs = new List<Spec>();
@@ -71,6 +78,8 @@ namespace _99phantram.Services
 
       await supply.SaveAsync();
 
+      await _mailService.SendSupplySubmitted(supply);
+
       return supply;
     }
 
@@ -128,6 +137,17 @@ namespace _99phantram.Services
       }
 
       await supply.SaveAsync();
+
+      if (body.SendEmail)
+      {
+        if (body.Status == SupplyStatus.DECLINED)
+          await _mailService.SendSupplyToDeclined(supply);
+        if (body.Status == SupplyStatus.ACTIVE)
+          await _mailService.SendSupplyToActive(supply);
+        if (body.Status == SupplyStatus.ARCHIVED)
+          await _mailService.SendSupplyToArchive(supply);
+      }
+
 
       return supply;
     }
