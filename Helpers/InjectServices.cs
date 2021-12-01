@@ -22,6 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
       services.AddTransient<IValidator<ServicePutBody>, ServicePutBodyValidator>();
       services.AddTransient<IValidator<LocationBody>, LocationBodyValidator>();
       services.AddTransient<IValidator<UserRegistrationBody>, UserRegistrationBodyValidator>();
+      services.AddTransient<IValidator<PutSupply>, PutSupplyValidator>();
 
       services.AddSingleton<IAmazonS3Options, AmazonS3Options>();
       services.AddSingleton<IAmazonS3Context, AmazonS3Context>();
@@ -35,6 +36,9 @@ namespace Microsoft.Extensions.DependencyInjection
       services.AddSingleton<IServiceTypeService, ServiceTypeService>();
       services.AddSingleton<ILocationService, LocationService>();
       services.AddSingleton<IMailService, MailService>();
+      services.AddSingleton<IChatService, ChatService>();
+      services.AddSingleton<IOrderService, OrderService>();
+      services.AddSingleton<IRatingService, RatingService>();
 
       services.AddScoped<AppAuthorize>();
       services.AddScoped<ClientAuthorize>();

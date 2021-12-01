@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 
 using _99phantram.Helpers;
 using _99phantram.Services;
+using _99phantram.Hubs;
 
 namespace _99phantram
 {
@@ -37,6 +38,7 @@ namespace _99phantram
         });
       });
       services.AddFluentValidation();
+      services.AddSignalR();
 
       services.Add99PhantramServices();
 
@@ -96,6 +98,7 @@ namespace _99phantram
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
+        endpoints.MapHub<ChatHub>("/api/chathub");
       });
     }
   }

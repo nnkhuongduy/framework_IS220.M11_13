@@ -23,4 +23,9 @@ namespace _99phantram.Models
       RuleFor(_ => _.Status).IsInEnum();
     }
   }
+
+  public class LocationSnapshot
+  {
+    public string Name { get; set; }
+  }
 }
