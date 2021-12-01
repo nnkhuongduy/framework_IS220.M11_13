@@ -14,6 +14,17 @@ namespace Microsoft.Extensions.DependencyInjection
     {
       services.AddTransient<IValidator<PostUserBody>, PostUserBodyValidator>();
       services.AddTransient<IValidator<PutUserBody>, PutUserBodyValidator>();
+      services.AddTransient<IValidator<SpecBody>, SpecBodyValidator>();
+      services.AddTransient<IValidator<PostCategoryBody>, PostCategoryBodyValidator>();
+      services.AddTransient<IValidator<PutCategoryBody>, PutCategoryBodyValidator>();
+      services.AddTransient<IValidator<ServiceTypeBody>, ServiceTypeBodyValidator>();
+      services.AddTransient<IValidator<ServicePostBody>, ServicePostBodyValidator>();
+      services.AddTransient<IValidator<ServicePutBody>, ServicePutBodyValidator>();
+      services.AddTransient<IValidator<LocationBody>, LocationBodyValidator>();
+      services.AddTransient<IValidator<ClientPostSupply>, ClientPostSupplyValidator>();
+      services.AddTransient<IValidator<ClientPostSupplySpec>, ClientPostSupplySpecValidator>();
+      services.AddTransient<IValidator<UserRegistrationBody>, UserRegistrationBodyValidator>();
+      services.AddTransient<IValidator<PutSupply>, PutSupplyValidator>();
 
       services.AddSingleton<IAmazonS3Options, AmazonS3Options>();
       services.AddSingleton<IAmazonS3Context, AmazonS3Context>();
@@ -23,8 +34,17 @@ namespace Microsoft.Extensions.DependencyInjection
       services.AddSingleton<IUserService, UserService>();
       services.AddSingleton<ICategoryService, CategoryService>();
       services.AddSingleton<ISpecService, SpecService>();
+      services.AddSingleton<IServiceService, ServiceService>();
+      services.AddSingleton<IServiceTypeService, ServiceTypeService>();
+      services.AddSingleton<ILocationService, LocationService>();
+      services.AddSingleton<ISupplyService, SupplyService>();
+      services.AddSingleton<IMailService, MailService>();
+      services.AddSingleton<IChatService, ChatService>();
+      services.AddSingleton<IOrderService, OrderService>();
+      services.AddSingleton<IRatingService, RatingService>();
 
       services.AddScoped<AppAuthorize>();
+      services.AddScoped<ClientAuthorize>();
       services.AddScoped<JwtHolder>();
 
       return services;

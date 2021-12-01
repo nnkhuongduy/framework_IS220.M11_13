@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 
 using _99phantram.Helpers;
 using _99phantram.Services;
+using _99phantram.Hubs;
 
 namespace _99phantram
 {
@@ -32,10 +33,12 @@ namespace _99phantram
         options.AddPolicy(name: AllowSpecificOrigins, builder =>
         {
           builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowCredentials().AllowAnyHeader();
+          builder.WithOrigins("http://localhost:3001").AllowAnyMethod().AllowCredentials().AllowAnyHeader();
           builder.WithOrigins("https://*.99phantram.com").SetIsOriginAllowedToAllowWildcardSubdomains().AllowAnyMethod().AllowCredentials().AllowAnyHeader();
         });
       });
       services.AddFluentValidation();
+      services.AddSignalR();
 
       services.Add99PhantramServices();
 
@@ -95,6 +98,7 @@ namespace _99phantram
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
+        endpoints.MapHub<ChatHub>("/api/chathub");
       });
     }
   }

@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Entities;
+
+using _99phantram.Models;
 
 namespace _99phantram.Entities
 {
   public enum OrderStatus
   {
     CREATED,
+    CONFIRMING,
     PAID,
     DELIVERED,
     DECLINED
@@ -15,13 +19,13 @@ namespace _99phantram.Entities
   public class Order : Entity, ICreatedOn
   {
     [Field("buyer")]
-    public User Buyer { get; set; }
+    public UserSnapshot Buyer { get; set; }
     [Field("seller")]
-    public User Seller { get; set; }
-    [Field("supplies")]
-    public Supply[] Supplies { get; set; }
-    [Field("demands")]
-    public Demand[] Demands { get; set; }
+    public UserSnapshot Seller { get; set; }
+    [Field("supply")]
+    public SupplySnapshot Supply { get; set; }
+    [Field("demand")]
+    public Demand Demand { get; set; }
     [Field("amount")]
     public long Amount { get; set; }
     [Field("status")]

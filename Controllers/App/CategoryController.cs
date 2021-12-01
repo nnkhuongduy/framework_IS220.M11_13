@@ -23,7 +23,7 @@ namespace _99phantram.Controllers.Apps
     [HttpGet]
     public async Task<ActionResult<List<Category>>> GetAllCategories()
     {
-      return await _categoryService.GetAllCategories();
+      return await DB.Find<Category>().Match(_ => true).ExecuteAsync();
     }
 
     [HttpGet("{id:length(24)}")]
@@ -37,8 +37,7 @@ namespace _99phantram.Controllers.Apps
       }
       catch (HttpError error)
       {
-
-        return NotFound(error);
+        return StatusCode(error.Code, error);
       }
     }
 
@@ -57,16 +56,11 @@ namespace _99phantram.Controllers.Apps
       {
         var newCategory = await _categoryService.UpdateCategory(body, id);
 
-        if (newCategory.Status == CategoryStatus.ARCHIVED)
-        {
-          await _categoryService.ArchiveCategory(newCategory);
-        }
-
         return StatusCode(204);
       }
       catch (HttpError error)
       {
-        return NotFound(error);
+        return StatusCode(error.Code, error);
       }
     }
 
@@ -81,7 +75,7 @@ namespace _99phantram.Controllers.Apps
       }
       catch (HttpError error)
       {
-        return NotFound(error);
+        return StatusCode(error.Code, error);
       }
     }
   }

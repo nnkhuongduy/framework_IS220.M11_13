@@ -1,14 +1,15 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Entities;
 using MongoDB.Bson;
+using System.Collections.Generic;
 
 namespace _99phantram.Entities
 {
   public enum LocationLevel
   {
     PROVINCE,
-    CITY,
-    DISTRICT
+    WARD,
+    BLOCK
   }
   public enum LocationStatus
   {
@@ -22,11 +23,13 @@ namespace _99phantram.Entities
     [Field("name")]
     public string Name { get; set; }
     [Field("location_level")]
-    public LocationLevel Locationlevel { get; set; }
+    public LocationLevel LocationLevel { get; set; }
     [Field("status")]
     [BsonDefaultValue(0)]
     public LocationStatus Status { get; set; }
+    [BsonIgnore]
+    public List<Location> SubLocations { get; set; }
     [Field("sub_locations")]
-    public ObjectId[] SubLocations { get; set; }
+    public List<ObjectId> SubLocationsRef { get; set; }
   }
 }

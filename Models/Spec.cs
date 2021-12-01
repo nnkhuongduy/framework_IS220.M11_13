@@ -13,7 +13,6 @@ namespace _99phantram.Models
     public SpecBodyValidator()
     {
       RuleFor(r => r.Name).NotEmpty();
-      RuleFor(r => r.Required).NotEmpty();
     }
   }
 }

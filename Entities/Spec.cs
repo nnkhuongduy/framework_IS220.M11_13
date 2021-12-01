@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Entities;
 
 namespace _99phantram.Entities
@@ -13,5 +14,7 @@ namespace _99phantram.Entities
     [Field("required")]
     [BsonDefaultValue(false)]
     public bool Required { get; set; }
+    [Field("parent")]
+    public ObjectId Parent { get; set; }
   }
 }

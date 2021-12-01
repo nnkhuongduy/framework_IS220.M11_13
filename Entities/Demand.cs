@@ -16,7 +16,7 @@ namespace _99phantram.Entities
     _99,
     _90,
     _80,
-    _50
+    Under80
   }
 
   [Collection("demands")]

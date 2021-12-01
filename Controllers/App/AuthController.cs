@@ -28,21 +28,14 @@ namespace _99phantram.Controllers.App
     [Route("login")]
     public async Task<ActionResult<AuthResponse>> Login(AuthRequest request)
     {
-      var employee = await DB.Find<User>().Match(e => e.Email == request.Email).ExecuteFirstAsync();
-
-      if (employee == null)
+      try
       {
-        return NotFound(new HttpError(false, 404, "Không tìm thấy nhân viên!"));
+        return await _authService.LoginEmployee(request);
       }
-
-      if (!_authService.VerifyPassword(request.Password, employee.Password))
+      catch (HttpError error)
       {
-        return BadRequest(new HttpError(false, 400, "Mật khẩu không đúng!"));
+        return StatusCode(error.Code, error);
       }
-
-      var authResponse = _authService.Authenticate(employee, request.Remember == "true");
-
-      return authResponse;
     }
 
     [HttpGet]
