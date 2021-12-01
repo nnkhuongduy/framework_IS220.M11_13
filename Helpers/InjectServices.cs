@@ -21,6 +21,8 @@ namespace Microsoft.Extensions.DependencyInjection
       services.AddTransient<IValidator<ServicePostBody>, ServicePostBodyValidator>();
       services.AddTransient<IValidator<ServicePutBody>, ServicePutBodyValidator>();
       services.AddTransient<IValidator<LocationBody>, LocationBodyValidator>();
+      services.AddTransient<IValidator<ClientPostSupply>, ClientPostSupplyValidator>();
+      services.AddTransient<IValidator<ClientPostSupplySpec>, ClientPostSupplySpecValidator>();
       services.AddTransient<IValidator<UserRegistrationBody>, UserRegistrationBodyValidator>();
       services.AddTransient<IValidator<PutSupply>, PutSupplyValidator>();
 
@@ -35,6 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
       services.AddSingleton<IServiceService, ServiceService>();
       services.AddSingleton<IServiceTypeService, ServiceTypeService>();
       services.AddSingleton<ILocationService, LocationService>();
+      services.AddSingleton<ISupplyService, SupplyService>();
       services.AddSingleton<IMailService, MailService>();
       services.AddSingleton<IChatService, ChatService>();
       services.AddSingleton<IOrderService, OrderService>();
