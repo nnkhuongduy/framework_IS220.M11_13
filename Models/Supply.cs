@@ -52,6 +52,8 @@ namespace _99phantram.Models
   public class SupplyQueryFilter
   {
     public int Page { get; set; }
+    public string CategorySlug { get; set; }
+    public string QueryText { get; set; }
   }
 
   public class PutSupply
@@ -66,7 +68,6 @@ namespace _99phantram.Models
     public PutSupplyValidator()
     {
       RuleFor(_ => _.Status).IsInEnum();
-      RuleFor(_ => _.SendEmail).NotEmpty();
     }
   }
 

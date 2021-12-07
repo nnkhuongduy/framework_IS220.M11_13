@@ -99,9 +99,23 @@ namespace _99phantram.Services
 
     public async Task<List<Supply>> GetActiveSupplies(SupplyQueryFilter filter)
     {
+      var query = $@"{{ status: 2 ";
+
+      if (!string.IsNullOrEmpty(filter.QueryText))
+        query += $@", $or: [
+          {{ name: {{ $regex: '{filter.QueryText}', $options: 'i' }} }},
+          {{ 'locations.name': {{ $regex: '{filter.QueryText}', $options: 'i' }} }},
+          {{ 'categories.name': {{ $regex: '{filter.QueryText}', $options: 'i' }} }}
+        ]";
+
+      if (!string.IsNullOrEmpty(filter.CategorySlug))
+        query += $", 'categories.slug': '{filter.CategorySlug}'";
+
+      query += "}";
+
       var supplies = await DB
         .Find<Supply>()
-        .Match(_ => _.Status == SupplyStatus.ACTIVE)
+        .MatchString(query)
         .Sort(_ => _.CreatedOn, MongoDB.Entities.Order.Descending)
         .Limit(20)
         .Skip(20 * filter.Page)
