@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>_99phantram</RootNamespace>
     <UserSecretsId>ed9423c4-c27a-479c-bd23-6b1d3d950d5f</UserSecretsId>
   </PropertyGroup>
