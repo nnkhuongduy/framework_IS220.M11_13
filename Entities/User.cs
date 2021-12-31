@@ -47,7 +47,7 @@ namespace _99phantram.Entities
     [BsonIgnore]
     public Location LocationProvince { get; set; }
 
-    [Field("location_provice")]
+    [Field("location_province")]
     public One<Location> LocationProvinceRef { get; set; }
 
     [BsonIgnore]

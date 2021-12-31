@@ -35,9 +35,7 @@ namespace _99phantram.Helpers
           var user = Run.Sync(() =>
             DB.Find<User>()
               .Match(user =>
-                user.ID.Equals(empId) &&
-                user.Role.RoleLevel != Entities.RoleLevel.CLIENT &&
-                user.Status == Entities.UserStatus.VERIFIED)
+                user.ID.Equals(empId))
               .Project(user => user.Exclude("password"))
               .ExecuteFirstAsync()
           );
@@ -47,6 +45,9 @@ namespace _99phantram.Helpers
 
           if (user.Status != UserStatus.VERIFIED)
             context.Result = new JsonResult(new HttpError(false, 400, "Tài khoản chưa được xác thực")) { StatusCode = StatusCodes.Status400BadRequest };
+
+          if (user.Role.RoleLevel != RoleLevel.CLIENT && user.Role.RoleLevel != RoleLevel.ALL)
+            context.Result = new JsonResult(new HttpError(false, 401, "Unauthorized")) { StatusCode = StatusCodes.Status401Unauthorized };
 
           if (
             (string.IsNullOrEmpty(user.PhoneNumber) ||

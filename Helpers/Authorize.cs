@@ -42,7 +42,7 @@ namespace _99phantram.Helpers
               .ExecuteFirstAsync()
           );
 
-          if (user != null)
+          if (user != null && (user.Role.RoleLevel == RoleLevel.APP || user.Role.RoleLevel == RoleLevel.ALL))
             _jwtHolder.User = user;
           else
             context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };

@@ -41,7 +41,7 @@ namespace _99phantram.Services
         throw new HttpError(false, 400, "Không thể lưu trữ địa điểm vẫn còn sản phẩm đang sử dụng!");
 
       location.Status = LocationStatus.ARCHIVED;
-      location.SubLocations.Clear();
+      location.SubLocationsRef.Clear();
 
       await _RemoveFromParents(location);
 

@@ -6,6 +6,7 @@ using MongoDB.Bson;
 
 using _99phantram.Interfaces;
 using _99phantram.Entities;
+using _99phantram.Models;
 
 namespace _99phantram.Controllers
 {
@@ -29,12 +30,23 @@ namespace _99phantram.Controllers
         .ExecuteAsync();
     }
 
-    [HttpGet("secondary/{id:length(24)}")]
-    public async Task<ActionResult<List<Category>>> GetSecondaryCategories(string id)
+    [HttpGet("secondary/{idOrSlug}")]
+    public async Task<ActionResult<List<Category>>> GetSecondaryCategories(string idOrSlug)
     {
-      var refs = await DB.Find<Category, List<ObjectId>>().MatchID(id).Project(_ => _.SubCategories).ExecuteFirstAsync();
+      var refs = await DB.Find<Category, List<ObjectId>>().Match(_ => _.ID == idOrSlug || _.Slug == idOrSlug).Project(_ => _.SubCategories).ExecuteFirstAsync();
 
       return await DB.Find<Category>().Match(_ => _.In("_id", refs)).Project(_ => _.Exclude("sub_categories")).ExecuteAsync();
+    }
+
+    [HttpGet("detail/{idOrSlug}")]
+    public async Task<ActionResult<Category>> GetCategory(string idOrSlug)
+    {
+      var category = await DB.Find<Category>().Match(_ => _.ID == idOrSlug || _.Slug == idOrSlug).ExecuteFirstAsync();
+
+      if (category == null)
+        return StatusCode(404, new HttpError(false, 404, "Không tìm thấy danh mục!"));
+
+      return category;
     }
   }
 }
