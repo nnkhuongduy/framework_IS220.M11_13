@@ -11,4 +11,4 @@ Website 99phantram lấy ý tưởng  từ  chotot  là  hệ  thống C2C ngư�
 | 3 | Võ Nguyễn Trường Dĩ | 18520595 | Thành viên | 20% | 80% |
 | 4 | Nguyễn Lê Duy | 17520403 | Thành viên | 20% | 60% |
 ## Hướng dẫn cài đặt đồ án
-
+https://docs.google.com/document/d/1_8C77QaE8f3YO1aL6l94UdqepOtp6BPtocljRGl-9eQ/edit?usp=sharing
