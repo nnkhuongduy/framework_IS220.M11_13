@@ -3,7 +3,7 @@ Demo website: https://99phantram.com | https://app.99phantram.com\
 Repo môn học IS220.M11
 # Giới thiệu đồ án
 Website 99phantram lấy ý tưởng  từ  chotot  là  hệ  thống C2C người  dùng  có  thể  đăng tin sản  phẩm  hàng  đã qua sử  dụng  lên  hệ  thống  và  các  người  dùng  khác  có  thể  tham  khảo  và  mua  hàng. Website sẽ  là  hệ  thống  trung  gian  hỗ  trợ  giao  tiếp  giữa  các  khách  hàng  là  người  dùng  hệ  thống.\
-Công nghệ:\
+Công nghệ:
  - CSDL: MongoDB
  - Backend: .Net 5.0
  - Frontend: React
